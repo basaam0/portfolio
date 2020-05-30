@@ -1,9 +1,63 @@
+html {
+  background-attachment: fixed;
+  background-image: url("images/forest.jpg");
+  background-repeat: no-repeat;
+  background-size: 100%;
+  font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+  height: 100%;
+}
+
+body {
+  height: 100%;
+}
+
 #content {
+  background-color: rgba(255,255,255,.45);
   margin-left: auto;
   margin-right: auto;
-  width: 650px;
+  width: 40%;
 }
 
 #greeting-container {
   margin-top: 20px;
+}
+
+h1 {
+  background-color:whitesmoke;
+  width: 100%;
+}
+
+h2 {
+  background-color: rgba(160,82,45,.1);
+  color: #523029;
+}
+
+h3, 
+h4, 
+p {
+  margin: 0;
+}
+
+ul {
+  margin-top: 0;
+}
+
+/* GitHub and LinkedIn Icons */
+
+#profiles {
+  float: right;
+  font-size: 36px;
+  margin: 1px 5px 1px;
+  text-align: right;
+  text-decoration: none;
+}
+
+.fa-github, 
+.fa-github:visited {
+  color: black;
+}
+
+.fa-linkedin, 
+.fa-linkedin:visited {
+  color: #0072b1
 }
