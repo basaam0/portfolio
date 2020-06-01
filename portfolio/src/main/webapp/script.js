@@ -52,13 +52,33 @@ let curBackground = 0;
  * Advances the background image by a given offset from the current image 
  */
 function changeBackground(offset) {
+  // List of background images and their color themes
   const backgroundImgs = [
-    'forest.jpg',
-    'ocean.jpg',
-    'mountain.jpg',
-    'balloons.jpg',
-    'iceberg.jpg',
-    'grass.jpg'
+    {
+      img: 'forest.jpg',
+      headingColor: '#523029',
+      headingBgColor: 'rgba(160,82,45,.1)',
+    }, {
+      img: 'ocean.jpg',
+      headingColor: 'navy',
+      headingBgColor: 'rgba(65,105,225,.1)',
+    }, {
+      img: 'mountain.jpg',
+      headingColor: 'midnightblue',
+      headingBgColor: 'rgba(0,128,128,.15)',
+    }, {
+      img: 'balloons.jpg',
+      headingColor: 'indianred',
+      headingBgColor: 'rgba(255,215,0,.2)',
+    }, {
+      img: 'iceberg.jpg',
+      headingColor: 'darkslategray',
+      headingBgColor: 'rgba(72,61,139,.2)',
+    }, {
+      img: 'grass.jpg',
+      headingColor: 'green',
+      headingBgColor: 'rgba(173,255,47,.2)',
+    },
   ];
 
   // Update the index of the current background image
@@ -73,5 +93,16 @@ function changeBackground(offset) {
 
   // Update the page with the new background image
   const html = document.documentElement;
-  html.style.backgroundImage = `url("images/${newBackground}")`;
+  html.style.backgroundImage = `url("images/${newBackground.img}")`;
+
+  // Update the headings to the color theme for the new image
+  updateColorTheme(newBackground.headingColor, newBackground.headingBgColor);
+}
+
+/**
+ * Updates the heading color CSS properties
+ */
+function updateColorTheme(headingColor, headingBgColor) {
+  document.body.style.setProperty('--heading-color', headingColor);
+  document.body.style.setProperty('--heading-bg-color', headingBgColor);
 }

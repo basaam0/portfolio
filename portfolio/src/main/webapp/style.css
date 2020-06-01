@@ -1,3 +1,10 @@
+/* Custom properties representing colors for the portfolio section headings */
+
+:root {
+  --heading-color: #523029;
+  --heading-bg-color: rgba(160,82,45,.1);
+}
+
 html {
   background-attachment: fixed;
   background-image: url("images/forest.jpg");
@@ -44,8 +51,8 @@ h1 {
 }
 
 h2 {
-  background-color: rgba(160,82,45,.1);
-  color: #523029;
+  background-color: var(--heading-bg-color);
+  color: var(--heading-color);
 }
 
 h3, 
