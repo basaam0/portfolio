@@ -21,7 +21,7 @@ function addRandomFact() {
     'My favorite color is blue.',
     'I enjoy outdoor activities.',
     'I skipped a grade.',
-    'I was born in Massachusetts.'
+    'I was born in Massachusetts.',
   ];
 
   // Pick a random fact.
@@ -30,4 +30,48 @@ function addRandomFact() {
   // Add it to the page.
   const factContainer = document.getElementById('fact-container');
   factContainer.innerText = fact;
+}
+
+/**
+ * Cycles backwards to the previous background image
+ */
+function prevBackground() {
+  changeBackground(-1);
+}
+
+/**
+ * Cycles forwards to the next background image
+ */
+function nextBackground() {
+  changeBackground(1);
+}
+
+let curBackground = 0;
+
+/**
+ * Advances the background image by a given offset from the current image 
+ */
+function changeBackground(offset) {
+  const backgroundImgs = [
+    'forest.jpg',
+    'ocean.jpg',
+    'mountain.jpg',
+    'balloons.jpg',
+    'iceberg.jpg',
+    'grass.jpg'
+  ];
+
+  // Update the index of the current background image
+  curBackground = (curBackground + offset) % backgroundImgs.length;
+
+  // Wrap around to the last image if the index is negative
+  if (curBackground < 0) {
+    curBackground += backgroundImgs.length;
+  }
+
+  const newBackground = backgroundImgs[curBackground];
+
+  // Update the page with the new background image
+  const html = document.documentElement;
+  html.style.backgroundImage = `url("images/${newBackground}")`;
 }

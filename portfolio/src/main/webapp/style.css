@@ -11,6 +11,22 @@ body {
   height: 100%;
 }
 
+/* Previous and next background buttons */
+
+#prev-button,
+#next-button {
+  background-color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 24px;
+  outline: none;
+  text-align: center;
+}
+
+#next-button {
+  float: right;
+}
+
 #content {
   background-color: rgba(255,255,255,.45);
   margin-left: auto;
@@ -18,7 +34,7 @@ body {
   width: 40%;
 }
 
-#greeting-container {
+#fact-container {
   margin-top: 20px;
 }
 
