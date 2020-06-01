@@ -106,3 +106,12 @@ function updateColorTheme(headingColor, headingBgColor) {
   document.body.style.setProperty('--heading-color', headingColor);
   document.body.style.setProperty('--heading-bg-color', headingBgColor);
 }
+
+/**
+ * Fetches a greeting from the server and adds it to the DOM
+ */
+function getGreeting() {
+  fetch('/data').then(response => response.text()).then((greeting) => {
+    document.getElementById('greeting-container').innerHTML = greeting;
+  });
+}
