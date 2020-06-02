@@ -33,23 +33,23 @@ function addRandomFact() {
 }
 
 /**
- * Cycles backwards to the previous background image
+ * Cycles backwards to the previous background image.
  */
 function prevBackground() {
   changeBackground(-1);
 }
 
 /**
- * Cycles forwards to the next background image
+ * Cycles forwards to the next background image.
  */
 function nextBackground() {
   changeBackground(1);
 }
 
-let curBackground = 0;
+let currentBackgroundIndex = 0;
 
 /**
- * Advances the background image by a given offset from the current image 
+ * Advances the background image by a given offset from the current image.
  */
 function changeBackground(offset) {
   // List of background images and their color themes
@@ -82,14 +82,14 @@ function changeBackground(offset) {
   ];
 
   // Update the index of the current background image
-  curBackground = (curBackground + offset) % backgroundImgs.length;
+  currentBackgroundIndex = (currentBackgroundIndex + offset) % backgroundImgs.length;
 
   // Wrap around to the last image if the index is negative
-  if (curBackground < 0) {
-    curBackground += backgroundImgs.length;
+  if (currentBackgroundIndex < 0) {
+    currentBackgroundIndex += backgroundImgs.length;
   }
 
-  const newBackground = backgroundImgs[curBackground];
+  const newBackground = backgroundImgs[currentBackgroundIndex];
 
   // Update the page with the new background image
   const html = document.documentElement;
@@ -100,7 +100,7 @@ function changeBackground(offset) {
 }
 
 /**
- * Updates the heading color CSS properties
+ * Updates the heading color CSS properties.
  */
 function updateColorTheme(headingColor, headingBgColor) {
   document.body.style.setProperty('--heading-color', headingColor);
@@ -108,7 +108,7 @@ function updateColorTheme(headingColor, headingBgColor) {
 }
 
 /**
- * Fetches a list of messages from the server and adds them to the DOM
+ * Fetches a list of messages from the server and adds them to the DOM.
  */
 function getMessages() {
   fetch('/data').then(response => response.json()).then((messages) => {
@@ -122,7 +122,9 @@ function getMessages() {
   });
 }
 
-/** Creates an <li> element containing text. */
+/** 
+  * Creates an <li> element containing text. 
+  */
 function createListElement(text) {
   const liElement = document.createElement('li');
   liElement.innerText = text;
