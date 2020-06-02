@@ -1,9 +1,82 @@
-#content {
-  margin-left: auto;
-  margin-right: auto;
-  width: 650px;
+/* Custom properties representing colors for the portfolio section headings */
+
+:root {
+  --heading-color: #523029;
+  --heading-bg-color: rgba(160,82,45,.1);
 }
 
-#greeting-container {
-  margin-top: 20px;
+html {
+  background: url(images/forest.jpg) center/100% no-repeat fixed;
+  font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+  height: 100%;
+}
+
+body {
+  height: 100%;
+}
+
+/* Previous and next background buttons */
+
+#prev-button,
+#next-button {
+  background: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 24px;
+  outline: none;
+  text-align: center;
+}
+
+#next-button {
+  float: right;
+}
+
+#content {
+  background: rgba(255,255,255,.45);
+  margin: 0 auto;
+  width: 40%;
+}
+
+#fact-container {
+  margin: 20px 0 0;
+}
+
+h1 {
+  background:whitesmoke;
+  width: 100%;
+}
+
+h2 {
+  background: var(--heading-bg-color);
+  color: var(--heading-color);
+}
+
+h3, 
+h4, 
+p {
+  margin: 0;
+}
+
+ul {
+  margin: 0 0 1em;
+}
+
+/* GitHub and LinkedIn Icons */
+
+#profiles {
+  float: right;
+  font-size: 36px;
+  margin: 1px 5px 1px;
+  text-align: right;
+  text-decoration: none;
+}
+
+.fa-github, 
+.fa-github:visited {
+  color: black;
+}
+
+.fa-linkedin, 
+.fa-linkedin:visited {
+  color: #0072b1;
 }
