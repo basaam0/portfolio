@@ -108,10 +108,23 @@ function updateColorTheme(headingColor, headingBgColor) {
 }
 
 /**
- * Fetches a greeting from the server and adds it to the DOM
+ * Fetches a list of messages from the server and adds them to the DOM
  */
-function getGreeting() {
-  fetch('/data').then(response => response.text()).then((greeting) => {
-    document.getElementById('greeting-container').innerHTML = greeting;
+function getMessages() {
+  fetch('/data').then(response => response.json()).then((messages) => {
+    const messagesElement = document.getElementById('message-container');
+    messagesElement.innerHTML = '';
+
+    // Create an <li> element for each message
+    for (const message of messages) {
+      messagesElement.appendChild(createListElement(message));
+    }
   });
+}
+
+/** Creates an <li> element containing text. */
+function createListElement(text) {
+  const liElement = document.createElement('li');
+  liElement.innerText = text;
+  return liElement;
 }
