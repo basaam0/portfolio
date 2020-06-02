@@ -93,7 +93,7 @@ function changeBackground(offset) {
 
   // Update the page with the new background image
   const html = document.documentElement;
-  html.style.backgroundImage = `url("images/${newBackground.img}")`;
+  html.style.backgroundImage = `url(images/${newBackground.img})`;
 
   // Update the headings to the color theme for the new image
   updateColorTheme(newBackground.headingColor, newBackground.headingBgColor);

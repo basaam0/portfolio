@@ -6,11 +6,8 @@
 }
 
 html {
-  background-attachment: fixed;
-  background-image: url("images/forest.jpg");
-  background-repeat: no-repeat;
-  background-size: 100%;
-  font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+  background: url(images/forest.jpg) center/100% no-repeat fixed;
+  font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
   height: 100%;
 }
 
@@ -22,7 +19,7 @@ body {
 
 #prev-button,
 #next-button {
-  background-color: white;
+  background: white;
   border: none;
   border-radius: 50%;
   font-size: 24px;
@@ -35,23 +32,22 @@ body {
 }
 
 #content {
-  background-color: rgba(255,255,255,.45);
-  margin-left: auto;
-  margin-right: auto;
+  background: rgba(255,255,255,.45);
+  margin: 0 auto;
   width: 40%;
 }
 
 #fact-container {
-  margin-top: 20px;
+  margin: 20px 0 0;
 }
 
 h1 {
-  background-color:whitesmoke;
+  background:whitesmoke;
   width: 100%;
 }
 
 h2 {
-  background-color: var(--heading-bg-color);
+  background: var(--heading-bg-color);
   color: var(--heading-color);
 }
 
@@ -62,7 +58,7 @@ p {
 }
 
 ul {
-  margin-top: 0;
+  margin: 0 0 1em;
 }
 
 /* GitHub and LinkedIn Icons */
@@ -82,5 +78,5 @@ ul {
 
 .fa-linkedin, 
 .fa-linkedin:visited {
-  color: #0072b1
+  color: #0072b1;
 }
