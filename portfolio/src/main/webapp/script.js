@@ -48,7 +48,7 @@ function nextBackground() {
 
 let currentBackgroundIndex = 0;
 
-// List of background images and their color themes
+// List of background images and their color themes.
 const backgroundImgs = [
   {
     img: 'forest.jpg',
@@ -81,21 +81,21 @@ const backgroundImgs = [
  * Advances the background image by a given offset from the current image.
  */
 function changeBackground(offset) {
-  // Update the index of the current background image
+  // Update the index of the current background image.
   currentBackgroundIndex = (currentBackgroundIndex + offset) % backgroundImgs.length;
 
-  // Wrap around to the last image if the index is negative
+  // Wrap around to the last image if the index is negative.
   if (currentBackgroundIndex < 0) {
     currentBackgroundIndex += backgroundImgs.length;
   }
 
   const newBackground = backgroundImgs[currentBackgroundIndex];
 
-  // Update the page with the new background image
+  // Update the page with the new background image.
   const html = document.documentElement;
   html.style.backgroundImage = `url(images/${newBackground.img})`;
 
-  // Update the headings to the color theme for the new image
+  // Update the headings to the color theme for the new image.
   updateColorTheme(newBackground.headingColor, newBackground.headingBgColor);
 }
 
@@ -108,25 +108,30 @@ function updateColorTheme(headingColor, headingBgColor) {
 }
 
 /**
- * Fetches a list of messages from the server and adds them to the DOM.
+ * Fetches the list of comments from the server and adds them to the DOM.
  */
-function getMessages() {
-  fetch('/data').then(response => response.json()).then((messages) => {
-    const messagesElement = document.getElementById('message-container');
-    messagesElement.innerHTML = '';
+function getComments() {
+  fetch('/data').then(response => response.json()).then((comments) => {
+    const commentsContainer = document.getElementById('comments-container');
+    commentsContainer.innerHTML = '';
 
-    // Create an <li> element for each message
-    for (const message of messages) {
-      messagesElement.appendChild(createListElement(message));
+    // Create <h4> and <p> elements for each comment's author and text.
+    for (const comment of comments) {
+      const commentElement = document.createElement('div');
+      createTextElement(commentElement, 'h4', comment.author);
+      createTextElement(commentElement, 'p', comment.commentText);
+      commentsContainer.prepend(commentElement);
     }
   });
 }
 
-/** 
-  * Creates an <li> element containing text. 
-  */
-function createListElement(text) {
-  const liElement = document.createElement('li');
-  liElement.innerText = text;
-  return liElement;
+/**
+ * Creates an html element containing the specified text and
+ * inserts it as the last child of a given parent element.
+ */
+function createTextElement(parentElement, htmlTag, innerText) {
+  const element = document.createElement(htmlTag);
+  element.innerText = innerText;
+  parentElement.appendChild(element);
+  return element;
 }

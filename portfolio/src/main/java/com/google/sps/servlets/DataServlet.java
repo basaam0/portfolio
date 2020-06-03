@@ -14,6 +14,7 @@
 
 package com.google.sps.servlets;
 
+import com.google.sps.data.Comment;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,26 +24,20 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that returns some example content. TODO: modify this file to handle comments data */
+/** 
+ * Servlet with a GET handler that returns a list of comments and a POST handler that adds a new comment to the list using form data.
+ */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
-  private List<String> messages;
-
-  @Override
-  public void init() {
-    messages = new ArrayList<>();
-    messages.add("Hello, this is the first message.");
-    messages.add("This is the second message.");
-    messages.add("This is the third and final message.");
-  }
+  private List<Comment> comments = new ArrayList<>();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // Convert the list of messages to JSON
-    String json = convertToJson(messages);
+    // Convert the list of comments to JSON.
+    String json = convertToJson(comments);
 
-    // Send the JSON as the response
+    // Send the JSON as the response.
     response.setContentType("text/html;");
     response.getWriter().println(json);
   }
@@ -54,5 +49,27 @@ public class DataServlet extends HttpServlet {
     Gson gson = new Gson();
     String json = gson.toJson(list);
     return json;
+  }
+
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // Get the input from the form.
+    String author = request.getParameter("author");
+    String commentText = request.getParameter("comment");
+
+    Comment comment;
+
+    // Initialize the comment, using  "Anonymous" as the author if none is provided
+    if (author == null || author.length() == 0) {
+      comment = new Comment(commentText);
+    }
+    else {
+      comment = new Comment(author, commentText);
+    }
+
+    comments.add(comment);
+
+    // Redirect back to the HTML page.
+    response.sendRedirect("/index.html");
   }
 }

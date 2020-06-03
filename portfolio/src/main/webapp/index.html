@@ -7,6 +7,7 @@
 
 <script src="script.js"></script>
 
+<body onload="getComments()">
 <button id="prev-button" type="button" onclick="prevBackground()">&lt;</button>
 <button id="next-button" type="button" onclick="nextBackground()">&gt;</button>
 
@@ -86,12 +87,23 @@
     <li>Maryland Science Olympiad Club
   </ul>
 
-  <h2>Buttons</h2>
+  <h2>Facts</h2>
   <p>Click here to get a random fact about me:
   <button onclick="addRandomFact()">Click Here</button>
   <div id="fact-container"></div>
-  <br>
-  <p>Click here to see some messages:
-  <button onclick="getMessages()">Fetch messages!</button>
-  <ul id="message-container"></ul>
+
+  <h2>Comments</h2>
+  <form action="/data" method="POST">
+    
+    <p>Post a comment:
+    <br><br>
+    <input type="text" name="author" placeholder="Your Name">
+    <br><br>
+    <textarea name="comment" placeholder="Comment" required></textarea>
+    <br><br>
+
+    <input type="submit">
+  </form>
+
+  <div id="comments-container"></div>
 </div>
