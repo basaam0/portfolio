@@ -123,6 +123,11 @@ ul {
   padding: 3px;
 }
 
+#comments-container div p:first-child {
+  color: gray;
+  float: right;
+}
+
 #delete-comments {
   background: red;
   border: none;

@@ -26,6 +26,8 @@ import com.google.appengine.api.datastore.FetchOptions;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
@@ -58,9 +60,10 @@ public class DataServlet extends HttpServlet {
       long id = entity.getKey().getId();
       String author = (String) entity.getProperty("author");
       String commentText = (String) entity.getProperty("commentText");
+      String formattedDate = (String) entity.getProperty("formattedDate");
       long timestamp = (long) entity.getProperty("timestamp");
 
-      return new Comment(id, author, commentText, timestamp);
+      return new Comment(id, author, commentText, formattedDate, timestamp);
     }).collect(Collectors.toList());
 
     // Convert the list of comments to JSON.
@@ -134,11 +137,14 @@ public class DataServlet extends HttpServlet {
     }
 
     long timestamp = System.currentTimeMillis();
+    SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, MMM d, yyyy h:mm:ss a");
+    String formattedDate = dateFormat.format(new Date(timestamp));
     
     // Create an entity with a kind of Comment.
     Entity commentEntity = new Entity("Comment");
     commentEntity.setProperty("author", author);
     commentEntity.setProperty("commentText", commentText);
+    commentEntity.setProperty("formattedDate", formattedDate);
     commentEntity.setProperty("timestamp", timestamp);
 
     // Store the comment entity in Datastore.

@@ -24,12 +24,14 @@ public final class Comment {
   private final long id;
   private final String author;
   private final String commentText;
+  private final String formattedDate;
   private final long timestamp;
 
-  public Comment(long id, String author, String commentText, long timestamp) {
+  public Comment(long id, String author, String commentText, String formattedDate, long timestamp) {
     this.id = id;
     this.author = author;
     this.commentText = commentText;
+    this.formattedDate = formattedDate;
     this.timestamp = timestamp;
   }
 }

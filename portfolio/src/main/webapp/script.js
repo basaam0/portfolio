@@ -123,6 +123,7 @@ async function getComments() {
   // Create <h4> and <p> elements for each comment's author and text.
   comments.forEach((comment) => {
     const commentElement = document.createElement('div');
+    createTextElement(commentElement, 'p', comment.formattedDate);
     createTextElement(commentElement, 'h4', comment.author);
     createTextElement(commentElement, 'p', comment.commentText);
     commentsContainer.appendChild(commentElement);
