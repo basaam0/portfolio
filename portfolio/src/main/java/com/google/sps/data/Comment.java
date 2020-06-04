@@ -1,22 +1,21 @@
 package com.google.sps.data;
 
 /**
- * Class representing a user's comment.
+ * A user's comment.
  */
 public final class Comment {
 
-  private String author;
-  private String commentText;
+  public static final String DEFAULT_AUTHOR = "Anonymous";
 
-  public Comment(String author, String commentText) {
+  private final long id;
+  private final String author;
+  private final String commentText;
+  private final long timestamp;
+
+  public Comment(long id, String author, String commentText, long timestamp) {
+    this.id = id;
     this.author = author;
     this.commentText = commentText;
-  }
-
-  /**
-   * Sets the author to "Anonymous" if none is specified.
-   */
-  public Comment(String commentText) {
-    this("Anonymous", commentText);
+    this.timestamp = timestamp;
   }
 }

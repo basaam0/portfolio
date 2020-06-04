@@ -120,7 +120,7 @@ function getComments() {
       const commentElement = document.createElement('div');
       createTextElement(commentElement, 'h4', comment.author);
       createTextElement(commentElement, 'p', comment.commentText);
-      commentsContainer.prepend(commentElement);
+      commentsContainer.appendChild(commentElement);
     }
   });
 }
