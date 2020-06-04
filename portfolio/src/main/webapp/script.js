@@ -120,14 +120,25 @@ async function getComments() {
   const commentsContainer = document.getElementById('comments-container');
   commentsContainer.innerHTML = '';
 
-  // Create <h4> and <p> elements for each comment's author and text.
-  comments.forEach((comment) => {
+  // Add a message if there are no comments.
+  if (comments.length === 0) {
     const commentElement = document.createElement('div');
-    createTextElement(commentElement, 'p', comment.formattedDate);
-    createTextElement(commentElement, 'h4', comment.author);
-    createTextElement(commentElement, 'p', comment.commentText);
+    const pElement = createTextElement(commentElement, 'p', 'No comments here...');
+    pElement.id = 'empty-comment';
     commentsContainer.appendChild(commentElement);
-  });
+  } else {
+    // Create <h4> and <p> elements for each comment's author and text.
+    comments.forEach((comment) => {
+      const commentElement = document.createElement('div');
+      
+      const pElement = createTextElement(commentElement, 'p', comment.formattedDate);
+      pElement.classList.add('comment-date');
+      createTextElement(commentElement, 'h4', comment.author);
+      createTextElement(commentElement, 'p', comment.commentText);
+
+      commentsContainer.appendChild(commentElement);
+    });
+  }
 }
 
 /**

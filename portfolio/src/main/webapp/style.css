@@ -123,9 +123,14 @@ ul {
   padding: 3px;
 }
 
-#comments-container div p:first-child {
+.comment-date {
   color: gray;
   float: right;
+}
+
+#empty-comment {
+  margin: 8px 0;
+  text-align: center;
 }
 
 #delete-comments {
