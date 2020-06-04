@@ -94,6 +94,14 @@ textarea {
   width: 50%;
 }
 
+label {
+  margin: 0px 10px 0;
+}
+
+#max-comments {
+  width: 40px;
+}
+
 #comments-container {
   padding: 8px;
 }

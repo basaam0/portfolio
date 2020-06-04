@@ -111,7 +111,9 @@ function updateColorTheme(headingColor, headingBgColor) {
  * Fetches the list of comments from the server and adds them to the DOM.
  */
 function getComments() {
-  fetch('/data').then(response => response.json()).then((comments) => {
+  const maxComments = document.getElementById('max-comments').value;
+
+  fetch(`/data?max-comments=${maxComments}`).then(response => response.json()).then((comments) => {
     const commentsContainer = document.getElementById('comments-container');
     commentsContainer.innerHTML = '';
 

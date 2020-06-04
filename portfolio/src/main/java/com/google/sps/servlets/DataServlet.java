@@ -22,6 +22,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.datastore.FetchOptions;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,13 +42,15 @@ public class DataServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
 
-    // Query comment entities from Datastore.
+    int maxComments = getMaxComments(request);
+
+    // Query up to maxComments comment entities from Datastore.
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    PreparedQuery results = datastore.prepare(query);
+    List<Entity> results = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(maxComments));
 
     // Construct a list of comments from the queried entities.
     List<Comment> comments = new ArrayList<>();
-    for (Entity entity : results.asIterable()) {
+    for (Entity entity : results) {
       long id = entity.getKey().getId();
       String author = (String) entity.getProperty("author");
       String commentText = (String) entity.getProperty("commentText");
@@ -63,6 +66,31 @@ public class DataServlet extends HttpServlet {
     // Send the JSON as the response.
     response.setContentType("text/html;");
     response.getWriter().println(json);
+  }
+
+  /** 
+   * Returns the maximum number of comments selected by the user, or -1 if the number was invalid.
+   */
+  private int getMaxComments(HttpServletRequest request) {
+    // Get the input from the form.
+    String maxCommentsString = request.getParameter("max-comments");
+
+    // Convert the input to an int.
+    int maxComments;
+    try {
+      maxComments = Integer.parseInt(maxCommentsString);
+    } catch (NumberFormatException e) {
+      System.err.println("Could not convert to int: " + maxCommentsString);
+      return -1;
+    }
+
+    // Check that the input is positive.
+    if (maxComments< 1) {
+      System.err.println("Choice for maximum number of comments is out of range: " + maxCommentsString);
+      return -1;
+    }
+
+    return maxComments;
   }
 
   /**
