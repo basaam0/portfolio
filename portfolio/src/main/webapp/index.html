@@ -96,18 +96,27 @@
   <h2>Comments</h2>
   <form id="post-comment" action="/data" method="POST">
     
-    <p>Post a comment:
-    <br><br>
+    <h3>Post a comment:</h3>
+    <br>
+    <label id="author-label" for="author">Name:</label>
     <input type="text" name="author" placeholder="Your Name">
     <br><br>
+    <label for="comment">Comment:</label>
     <textarea name="comment" placeholder="Comment" required></textarea>
     <br><br>
 
-    <input type="submit">
+    <input id="submit-comment" type="submit">
   </form>
   <br>
   <label class="comments-label" for="max-comments">Maximum Number of Comments:</label>
   <input type="number" id="max-comments" name="max-comments" min="1" value="5" onchange="getComments()">
+
+  <label for="sort-option">Sort By:</label>
+  <select id="sort-option" name="sort-option" onchange="getComments()">
+    <option value="newest">Newest First</option>
+    <option value="oldest">Oldest First</option>
+    <option value="name">Alphabetically by Author</option>
+  </select>
 
   <div id="comments-container"></div>
   <button id="delete-comments" onclick="deleteAllComments()">⚠️ Delete All Comments ⚠️</button>

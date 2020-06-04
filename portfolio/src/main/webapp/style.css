@@ -39,7 +39,7 @@ body {
 }
 
 #fact-container {
-  margin: 20px 0 0;
+  margin: 20px 8px 0;
 }
 
 h1 {
@@ -87,6 +87,7 @@ ul {
 /* Comments Section */
 
 #post-comment {
+  background: rgba(255,255,255,.4);
   padding: 5px;
 }
 
@@ -96,7 +97,15 @@ ul {
 }
 
 .comments-label {
-  margin: 0px 10px 0;
+  margin: 0px 10px;
+}
+
+#author-label {
+  margin: 0 22px;
+}
+
+#submit-comment {
+  margin: 0 90px;
 }
 
 #max-comments {
@@ -110,7 +119,7 @@ ul {
 #comments-container div {
   background: rgba(255,255,255,.6);
   border: solid 1px black;
-  margin: 20px 0 20px;
+  margin: 20px 0;
   padding: 3px;
 }
 

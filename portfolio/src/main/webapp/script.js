@@ -112,7 +112,9 @@ function updateColorTheme(headingColor, headingBgColor) {
  */
 async function getComments() {
   const maxComments = document.getElementById('max-comments').value;
-  const response = await fetch(`/data?max-comments=${maxComments}`);
+  const sortOption = document.getElementById('sort-option').value;
+
+  const response = await fetch(`/data?max-comments=${maxComments}&sort-option=${sortOption}`);
   const comments = await response.json();
 
   const commentsContainer = document.getElementById('comments-container');
