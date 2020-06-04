@@ -113,7 +113,7 @@ function updateColorTheme(headingColor, headingBgColor) {
 function getComments() {
   const maxComments = document.getElementById('max-comments').value;
 
-  fetch(`/data?max-comments=${maxComments}`).then(response => response.json()).then((comments) => {
+  fetch(`/data?max-comments=${maxComments}`).then((response) => response.json()).then((comments) => {
     const commentsContainer = document.getElementById('comments-container');
     commentsContainer.innerHTML = '';
 
@@ -136,4 +136,17 @@ function createTextElement(parentElement, htmlTag, innerText) {
   element.innerText = innerText;
   parentElement.appendChild(element);
   return element;
+}
+
+/**
+ * Deletes all comments from the server and removes them from the page.
+ */
+function deleteAllComments() {
+  fetch('/delete-data', {
+    method: 'POST'
+  }).then((response) => {
+    const commentsContainer = document.getElementById('comments-container');
+    commentsContainer.innerHTML = '';
+    getComments();
+  });
 }

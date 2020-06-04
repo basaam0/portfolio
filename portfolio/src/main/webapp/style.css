@@ -34,6 +34,7 @@ body {
 #content {
   background: rgba(255,255,255,.45);
   margin: 0 auto;
+  padding: 0 0 30px;
   width: 40%;
 }
 
@@ -111,4 +112,15 @@ label {
   border: solid 1px black;
   margin: 20px 0 20px;
   padding: 3px;
+}
+
+#delete-comments {
+  background: red;
+  border: none;
+  color: white;
+  display: block;
+  font-size: 14px;
+  margin: auto;
+  outline: none;
+  padding: 4px;
 }
