@@ -1,4 +1,4 @@
-/* Custom properties representing colors for the portfolio section headings */
+/* Custom properties representing colors for the background theme */
 
 :root {
   --button-bg-color: rgba(160,82,45,.7);
@@ -139,12 +139,12 @@ ul {
   padding: 5px;
 }
 
-#post-comment input,
-#post-comment textarea {
+#author-input,
+#comment-input {
   border: solid 1px var(--primary-theme-color);
 }
 
-#post-comment textarea {
+#comment-input {
   height: 5vh;
   width: 50%;
 }

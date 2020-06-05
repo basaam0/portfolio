@@ -110,15 +110,15 @@
   </div>
 
   <h2>Comments</h2>
-  <form id="post-comment" action="/data" method="POST">
+  <form id="post-comment" action="#" onsubmit="postComment(event)">
     
     <h3>Post a comment:</h3>
     <br>
     <label id="author-label" for="author">Name:</label>
-    <input type="text" name="author" placeholder="Your Name">
+    <input id="author-input" type="text" name="author" placeholder="Your Name">
     <br><br>
     <label class="comments-label" for="comment">Comment:</label>
-    <textarea name="comment" placeholder="Comment" required></textarea>
+    <textarea id="comment-input" name="comment" placeholder="Comment" required></textarea>
     <br><br>
 
     <input id="submit-comment" type="submit">

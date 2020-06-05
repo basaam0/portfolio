@@ -150,8 +150,5 @@ public class DataServlet extends HttpServlet {
     // Store the comment entity in Datastore.
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(commentEntity);
-
-    // Redirect back to the HTML page.
-    response.sendRedirect("/index.html");
   }
 }

@@ -167,6 +167,25 @@ function createTextElement(parentElement, htmlTag, innerText) {
 }
 
 /**
+ * Posts a new comment to the server and updates the list of comments.
+ */
+async function postComment(event) {
+  // Prevent the default action of reloading the page to prevent the background theme from resetting.
+  event.preventDefault();
+
+  const authorInput = document.getElementById('author-input');
+  const commentInput = document.getElementById('comment-input');
+
+  const response = await fetch(`/data?author=${authorInput.value}&comment=${commentInput.value}`, {
+    method: 'POST'
+  });
+
+  // Clear out the form input.
+  authorInput.value = commentInput.value = '';
+  getComments();
+}
+
+/**
  * Deletes all comments from the server and removes them from the page.
  */
 async function deleteAllComments() {
