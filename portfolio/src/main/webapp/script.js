@@ -49,7 +49,7 @@ function nextBackground() {
 let currentBackgroundIndex = 0;
 
 // List of background images and their color themes.
-const backgroundImgs = [
+const backgroundThemes = [
   {
     img: 'forest.jpg',
     headingColor: '#523029',
@@ -82,14 +82,14 @@ const backgroundImgs = [
  */
 function changeBackground(offset) {
   // Update the index of the current background image.
-  currentBackgroundIndex = (currentBackgroundIndex + offset) % backgroundImgs.length;
+  currentBackgroundIndex = (currentBackgroundIndex + offset) % backgroundThemes.length;
 
   // Wrap around to the last image if the index is negative.
   if (currentBackgroundIndex < 0) {
-    currentBackgroundIndex += backgroundImgs.length;
+    currentBackgroundIndex += backgroundThemes.length;
   }
 
-  const newBackground = backgroundImgs[currentBackgroundIndex];
+  const newBackground = backgroundThemes[currentBackgroundIndex];
 
   // Update the page with the new background image.
   const html = document.documentElement;
@@ -110,21 +110,21 @@ function updateColorTheme(headingColor, headingBgColor) {
 /**
  * Fetches the list of comments from the server and adds them to the DOM.
  */
-function getComments() {
+async function getComments() {
   const maxComments = document.getElementById('max-comments').value;
+  const response = await fetch(`/data?max-comments=${maxComments}`);
+  const comments = await response.json();
 
-  fetch(`/data?max-comments=${maxComments}`).then((response) => response.json()).then((comments) => {
-    const commentsContainer = document.getElementById('comments-container');
-    commentsContainer.innerHTML = '';
+  const commentsContainer = document.getElementById('comments-container');
+  commentsContainer.innerHTML = '';
 
-    // Create <h4> and <p> elements for each comment's author and text.
-    for (const comment of comments) {
-      const commentElement = document.createElement('div');
-      createTextElement(commentElement, 'h4', comment.author);
-      createTextElement(commentElement, 'p', comment.commentText);
-      commentsContainer.appendChild(commentElement);
-    }
-  });
+  // Create <h4> and <p> elements for each comment's author and text.
+  for (const comment of comments) {
+    const commentElement = document.createElement('div');
+    createTextElement(commentElement, 'h4', comment.author);
+    createTextElement(commentElement, 'p', comment.commentText);
+    commentsContainer.appendChild(commentElement);
+  }
 }
 
 /**
@@ -141,12 +141,10 @@ function createTextElement(parentElement, htmlTag, innerText) {
 /**
  * Deletes all comments from the server and removes them from the page.
  */
-function deleteAllComments() {
-  fetch('/delete-data', {
+async function deleteAllComments() {
+  const response = await fetch('/delete-data', {
     method: 'POST'
-  }).then((response) => {
-    const commentsContainer = document.getElementById('comments-container');
-    commentsContainer.innerHTML = '';
-    getComments();
   });
+  
+  getComments();
 }

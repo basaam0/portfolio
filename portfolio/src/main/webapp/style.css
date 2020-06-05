@@ -86,16 +86,16 @@ ul {
 
 /* Comments Section */
 
-form {
+#post-comment {
   padding: 5px;
 }
 
-textarea {
+#post-comment textarea {
   height: 5vh;
   width: 50%;
 }
 
-label {
+.comments-label {
   margin: 0px 10px 0;
 }
 

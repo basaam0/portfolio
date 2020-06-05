@@ -26,6 +26,7 @@ import com.google.appengine.api.datastore.FetchOptions;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -38,9 +39,11 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
+  private static final Logger LOGGER = Logger.getLogger(DataServlet.class.getName());
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    int maxComments = getMaxComments(request);
+    int maxComments = getMaxCommentsToReturn(request);
 
     // Query up to maxComments comment entities from Datastore.
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -68,9 +71,9 @@ public class DataServlet extends HttpServlet {
   }
 
   /** 
-   * Returns the maximum number of comments selected by the user, or -1 if the number was invalid.
+   * Returns the maximum number of comments selected by the user, or the default of 10 if the number was invalid.
    */
-  private int getMaxComments(HttpServletRequest request) {
+  private int getMaxCommentsToReturn(HttpServletRequest request) {
     // Get the input from the form.
     String maxCommentsString = request.getParameter("max-comments");
 
@@ -79,14 +82,14 @@ public class DataServlet extends HttpServlet {
     try {
       maxComments = Integer.parseInt(maxCommentsString);
     } catch (NumberFormatException e) {
-      System.err.println("Could not convert to int: " + maxCommentsString);
-      return -1;
+      LOGGER.warning("Could not convert to int: " + maxCommentsString);
+      return 10;
     }
 
     // Check that the input is positive.
-    if (maxComments< 1) {
-      System.err.println("Choice for maximum number of comments is out of range: " + maxCommentsString);
-      return -1;
+    if (maxComments < 1) {
+      LOGGER.warning("Choice for maximum number of comments is out of range: " + maxCommentsString);
+      return 10;
     }
 
     return maxComments;
@@ -108,7 +111,7 @@ public class DataServlet extends HttpServlet {
     String commentText = request.getParameter("comment");
     
     // Use the default author "Anonymous" if none is provided.
-    if (author.length() == 0) {
+    if (author.isEmpty()) {
       author = Comment.DEFAULT_AUTHOR;
     }
 
