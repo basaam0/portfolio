@@ -1,8 +1,16 @@
 /* Custom properties representing colors for the portfolio section headings */
 
 :root {
-  --heading-color: #523029;
+  --button-bg-color: rgba(160,82,45,.7);
+  --comment-bg-color: rgba(255,255,255,.6);
   --heading-bg-color: rgba(160,82,45,.1);
+  --highlight-bg-color: rgba(0,255,0,.3);
+  --primary-theme-color: #523029;
+  --section-bg-color: rgba(255,255,255,.3);
+}
+
+::selection {
+  background: var(--highlight-bg-color);
 }
 
 html {
@@ -15,7 +23,7 @@ body {
   height: 100%;
 }
 
-/* Previous and next background buttons */
+/* Buttons */
 
 #prev-button,
 #next-button {
@@ -23,7 +31,6 @@ body {
   border: none;
   border-radius: 50%;
   font-size: 24px;
-  outline: none;
   text-align: center;
 }
 
@@ -31,11 +38,40 @@ body {
   float: right;
 }
 
+button,
+#submit-comment {
+  cursor: pointer;
+  outline: none;
+}
+
+.portfolio-section button,
+#submit-comment {
+  background: var(--button-bg-color);
+  border: solid 4px transparent;
+  border-radius: 10px;
+  margin: 0 90px;
+}
+
+button:hover,
+#submit-comment:hover {
+  box-shadow: 0 0 10px teal;
+}
+
+/* Main content */
+
 #content {
   background: rgba(255,255,255,.45);
   margin: 0 auto;
   padding: 0 0 30px;
   width: 40%;
+}
+
+.portfolio-section {
+  background: var(--section-bg-color);
+}
+
+#facts {
+  text-align: center; 
 }
 
 #fact-container {
@@ -49,7 +85,7 @@ h1 {
 
 h2 {
   background: var(--heading-bg-color);
-  color: var(--heading-color);
+  color: var(--primary-theme-color);
   padding: 0 5px;
 }
 
@@ -91,6 +127,11 @@ ul {
   padding: 5px;
 }
 
+#post-comment input,
+#post-comment textarea {
+  border: solid 1px var(--primary-theme-color);
+}
+
 #post-comment textarea {
   height: 5vh;
   width: 50%;
@@ -104,10 +145,6 @@ ul {
   margin: 0 22px;
 }
 
-#submit-comment {
-  margin: 0 90px;
-}
-
 #max-comments {
   width: 40px;
 }
@@ -117,10 +154,11 @@ ul {
 }
 
 #comments-container div {
-  background: rgba(255,255,255,.6);
-  border: solid 1px black;
+  background: var(--comment-bg-color);
+  border: solid 1px var(--primary-theme-color);
+  border-radius: 30px;
   margin: 20px 0;
-  padding: 3px;
+  padding: 4px 10px;
 }
 
 .comment-date {
@@ -135,11 +173,11 @@ ul {
 
 #delete-comments {
   background: red;
-  border: none;
+  border: solid 2px transparent;
+  border-radius: 15px;
   color: white;
   display: block;
   font-size: 14px;
   margin: auto;
-  outline: none;
   padding: 4px;
 }

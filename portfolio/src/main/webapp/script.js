@@ -52,28 +52,40 @@ let currentBackgroundIndex = 0;
 const backgroundThemes = [
   {
     img: 'forest.jpg',
-    headingColor: '#523029',
+    primaryColor: '#523029',
     headingBgColor: 'rgba(160,82,45,.1)',
+    highlightBgColor: 'rgba(34,139,34,.3)',
+    buttonBgColor: 'rgba(160,82,45,.7)',
   }, {
     img: 'ocean.jpg',
-    headingColor: 'navy',
+    primaryColor: 'navy',
     headingBgColor: 'rgba(65,105,225,.1)',
+    highlightBgColor: 'rgba(0,191,255,.2)',
+    buttonBgColor: 'rgba(135,206,235,.9)',
   }, {
     img: 'mountain.jpg',
-    headingColor: 'midnightblue',
+    primaryColor: 'midnightblue',
     headingBgColor: 'rgba(0,128,128,.15)',
+    highlightBgColor: 'rgba(25,25,112,.2)',
+    buttonBgColor: 'rgba(175, 238, 238,.9)'
   }, {
     img: 'balloons.jpg',
-    headingColor: 'indianred',
+    primaryColor: 'indianred',
     headingBgColor: 'rgba(255,215,0,.2)',
+    highlightBgColor: 'rgba(255,165,0,.5)',
+    buttonBgColor: 'rgba(255,69,0,.7)',
   }, {
     img: 'iceberg.jpg',
-    headingColor: 'darkslategray',
+    primaryColor: 'darkslategray',
     headingBgColor: 'rgba(72,61,139,.2)',
+    highlightBgColor: 'rgba(0,50,128,.4)',
+    buttonBgColor: 'rgba(90,150,150,.9)',
   }, {
     img: 'grass.jpg',
-    headingColor: 'green',
+    primaryColor: 'green',
     headingBgColor: 'rgba(173,255,47,.2)',
+    highlightBgColor: 'rgba(0,255,0,.4)',
+    buttonBgColor: 'rgba(127,255,0,.9)',
   },
 ];
 
@@ -89,22 +101,24 @@ function changeBackground(offset) {
     currentBackgroundIndex += backgroundThemes.length;
   }
 
-  const newBackground = backgroundThemes[currentBackgroundIndex];
+  const newBackgroundTheme = backgroundThemes[currentBackgroundIndex];
 
   // Update the page with the new background image.
   const html = document.documentElement;
-  html.style.backgroundImage = `url(images/${newBackground.img})`;
+  html.style.backgroundImage = `url(images/${newBackgroundTheme.img})`;
 
-  // Update the headings to the color theme for the new image.
-  updateColorTheme(newBackground.headingColor, newBackground.headingBgColor);
+  // Update the color theme based on the new background image.
+  updateColorTheme(newBackgroundTheme);
 }
 
 /**
- * Updates the heading color CSS properties.
+ * Updates the CSS properties for the color theme.
  */
-function updateColorTheme(headingColor, headingBgColor) {
-  document.body.style.setProperty('--heading-color', headingColor);
-  document.body.style.setProperty('--heading-bg-color', headingBgColor);
+function updateColorTheme(backgroundTheme) {
+  document.body.style.setProperty('--primary-theme-color', backgroundTheme.primaryColor);
+  document.body.style.setProperty('--heading-bg-color', backgroundTheme.headingBgColor);
+  document.body.style.setProperty('--highlight-bg-color', backgroundTheme.highlightBgColor);
+  document.body.style.setProperty('--button-bg-color', backgroundTheme.buttonBgColor);
 }
 
 /**
