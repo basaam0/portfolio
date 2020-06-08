@@ -40,6 +40,7 @@ import javax.servlet.http.HttpServletResponse;
 public class DataServlet extends HttpServlet {
 
   private static final Logger LOGGER = Logger.getLogger(DataServlet.class.getName());
+  private static final int DEFAULT_MAX_COMMENTS = 10;
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -76,8 +77,6 @@ public class DataServlet extends HttpServlet {
   private int getMaxCommentsToReturn(HttpServletRequest request) {
     // Get the input from the form.
     String maxCommentsString = request.getParameter("max-comments");
-
-    final int DEFAULT_MAX_COMMENTS = 10;
 
     // Convert the input to an int.
     int maxComments;
