@@ -119,12 +119,12 @@ async function getComments() {
   commentsContainer.innerHTML = '';
 
   // Create <h4> and <p> elements for each comment's author and text.
-  for (const comment of comments) {
+  comments.forEach((comment) => {
     const commentElement = document.createElement('div');
     createTextElement(commentElement, 'h4', comment.author);
     createTextElement(commentElement, 'p', comment.commentText);
     commentsContainer.appendChild(commentElement);
-  }
+  });
 }
 
 /**

@@ -77,19 +77,21 @@ public class DataServlet extends HttpServlet {
     // Get the input from the form.
     String maxCommentsString = request.getParameter("max-comments");
 
+    final int DEFAULT_MAX_COMMENTS = 10;
+
     // Convert the input to an int.
     int maxComments;
     try {
       maxComments = Integer.parseInt(maxCommentsString);
     } catch (NumberFormatException e) {
       LOGGER.warning("Could not convert to int: " + maxCommentsString);
-      return 10;
+      return DEFAULT_MAX_COMMENTS;
     }
 
     // Check that the input is positive.
     if (maxComments < 1) {
       LOGGER.warning("Choice for maximum number of comments is out of range: " + maxCommentsString);
-      return 10;
+      return DEFAULT_MAX_COMMENTS;
     }
 
     return maxComments;
