@@ -9,7 +9,7 @@
 
 <script src="script.js"></script>
 
-<body onload="getComments()">
+<body onload="loadCommentsSection()">
 <button id="prev-button" type="button" onclick="prevBackground()">&lt;</button>
 <button id="next-button" type="button" onclick="nextBackground()">&gt;</button>
 
@@ -110,19 +110,23 @@
   </div>
 
   <h2>Comments</h2>
-  <form id="post-comment" action="#" onsubmit="postComment(event)">
-    
+  <div id="comments-form-container">
     <h3>Post a comment:</h3>
     <br>
-    <label id="author-label" for="author">Name:</label>
-    <input id="author-input" type="text" name="author" placeholder="Your Name">
-    <br><br>
-    <label class="comments-label" for="comment">Comment:</label>
-    <textarea id="comment-input" name="comment" placeholder="Comment" required></textarea>
-    <br><br>
+    <div id="login-link-container"></div>
+    
+    <form id="post-comment" action="#" onsubmit="postComment(event)">
+      
+      <label id="author-label" for="author">Name:</label>
+      <input id="author-input" type="text" name="author" placeholder="Your Name">
+      <br><br>
+      <label class="comments-label" for="comment">Comment:</label>
+      <textarea id="comment-input" name="comment" placeholder="Comment" required></textarea>
+      <br><br>
 
-    <input id="submit-comment" type="submit">
-  </form>
+      <input id="submit-comment" type="submit">
+    </form>
+  </div>
   <br>
   <label class="comments-label" for="max-comments">Maximum Number of Comments:</label>
   <input type="number" id="max-comments" name="max-comments" min="1" value="5" onchange="getComments()">

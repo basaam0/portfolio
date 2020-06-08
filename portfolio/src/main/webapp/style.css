@@ -136,6 +136,7 @@ ul {
 
 #post-comment {
   background: rgba(255,255,255,.4);
+  display: none;
   padding: 5px;
 }
 

@@ -122,6 +122,46 @@ function updateColorTheme(backgroundTheme) {
 }
 
 /**
+ * Displays either the form to post a comment if the user is logged in or a link to login if they are not
+ * and displays the list of comments. 
+ */
+function loadCommentsSection() {
+  getCommentsForm();
+  getComments();
+}
+
+/**
+ * Fetches the login status from the server and either unhides the form to post a comment if the user is 
+ * logged in or adds a login link to the DOM. 
+ */
+async function getCommentsForm() {
+  const response = await fetch('/login-status');
+  const isLoggedIn = await response.json();
+
+  if (isLoggedIn) {
+    const commentsForm = document.getElementById('post-comment');
+
+    // Unhide the form, which is hidden by default.
+    commentsForm.style.display = 'block';
+  } else {
+    const loginLinkContainer = document.getElementById('login-link-container');
+    const loginUrl = await getLoginUrl();
+
+    // Display the login link.
+    loginLinkContainer.innerHTML = `<p>Please login <a href="${loginUrl}">here</a></p>`;
+  }
+}
+
+/**
+ * Fetches and returns a login link from the server.
+ */
+async function getLoginUrl() {
+  const response = await fetch('/login');
+  const loginUrl = await response.json();
+  return loginUrl;
+}
+
+/**
  * Fetches the list of comments from the server and adds them to the DOM.
  */
 async function getComments() {
