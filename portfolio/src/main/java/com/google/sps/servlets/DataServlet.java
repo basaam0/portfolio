@@ -14,19 +14,121 @@
 
 package com.google.sps.servlets;
 
+import com.google.sps.data.Comment;
+import com.google.gson.Gson;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.datastore.FetchOptions;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that returns some example content. TODO: modify this file to handle comments data */
+/** 
+ * Servlet with a GET handler that loads a list of comments from Datastore and 
+ * a POST handler that stores a new comment in Datastore.
+ */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
+  // Logs to System.err by default.
+  private static final Logger LOGGER = Logger.getLogger(DataServlet.class.getName());
+  private static final int DEFAULT_MAX_COMMENTS = 10;
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    int maxComments = getMaxCommentsToReturn(request);
+
+    // Query up to maxComments comment entities from Datastore.
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
+    List<Entity> results = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(maxComments));
+
+    // Construct a list of comments from the queried entities.
+    List<Comment> comments = results.stream().map((entity) -> {
+      long id = entity.getKey().getId();
+      String author = (String) entity.getProperty("author");
+      String commentText = (String) entity.getProperty("commentText");
+      long timestamp = (long) entity.getProperty("timestamp");
+
+      return new Comment(id, author, commentText, timestamp);
+    }).collect(Collectors.toList());
+
+    // Convert the list of comments to JSON.
+    String json = convertToJson(comments);
+
+    // Send the JSON as the response.
     response.setContentType("text/html;");
-    response.getWriter().println("<h1>Hello world!</h1>");
+    response.getWriter().println(json);
+  }
+
+  /** 
+   * Returns the maximum number of comments selected by the user, or the default of 10 if the number was invalid.
+   */
+  private int getMaxCommentsToReturn(HttpServletRequest request) {
+    // Get the input from the form.
+    String maxCommentsString = request.getParameter("max-comments");
+
+    // Convert the input to an int.
+    int maxComments;
+    try {
+      maxComments = Integer.parseInt(maxCommentsString);
+    } catch (NumberFormatException e) {
+      LOGGER.warning("Could not convert to int: " + maxCommentsString);
+      return DEFAULT_MAX_COMMENTS;
+    }
+
+    // Check that the input is positive.
+    if (maxComments < 1) {
+      LOGGER.warning("Choice for maximum number of comments is out of range: " + maxCommentsString);
+      return DEFAULT_MAX_COMMENTS;
+    }
+
+    return maxComments;
+  }
+
+  /**
+   * Converts a List into a JSON string using the Gson library.
+   */
+  private String convertToJson(List list) {
+    Gson gson = new Gson();
+    String json = gson.toJson(list);
+    return json;
+  }
+
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // Get the input from the form.
+    String author = request.getParameter("author");
+    String commentText = request.getParameter("comment");
+    
+    // Use the default author "Anonymous" if none is provided.
+    if (author.isEmpty()) {
+      author = Comment.DEFAULT_AUTHOR;
+    }
+
+    long timestamp = System.currentTimeMillis();
+    
+    // Create an entity with a kind of Comment.
+    Entity commentEntity = new Entity("Comment");
+    commentEntity.setProperty("author", author);
+    commentEntity.setProperty("commentText", commentText);
+    commentEntity.setProperty("timestamp", timestamp);
+
+    // Store the comment entity in Datastore.
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    datastore.put(commentEntity);
+
+    // Redirect back to the HTML page.
+    response.sendRedirect("/index.html");
   }
 }

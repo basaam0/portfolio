@@ -34,6 +34,7 @@ body {
 #content {
   background: rgba(255,255,255,.45);
   margin: 0 auto;
+  padding: 0 0 30px;
   width: 40%;
 }
 
@@ -49,12 +50,14 @@ h1 {
 h2 {
   background: var(--heading-bg-color);
   color: var(--heading-color);
+  padding: 0 5px;
 }
 
 h3, 
 h4, 
 p {
   margin: 0;
+  padding: 0 5px;
 }
 
 ul {
@@ -79,4 +82,45 @@ ul {
 .fa-linkedin, 
 .fa-linkedin:visited {
   color: #0072b1;
+}
+
+/* Comments Section */
+
+#post-comment {
+  padding: 5px;
+}
+
+#post-comment textarea {
+  height: 5vh;
+  width: 50%;
+}
+
+.comments-label {
+  margin: 0px 10px 0;
+}
+
+#max-comments {
+  width: 40px;
+}
+
+#comments-container {
+  padding: 8px;
+}
+
+#comments-container div {
+  background: rgba(255,255,255,.6);
+  border: solid 1px black;
+  margin: 20px 0 20px;
+  padding: 3px;
+}
+
+#delete-comments {
+  background: red;
+  border: none;
+  color: white;
+  display: block;
+  font-size: 14px;
+  margin: auto;
+  outline: none;
+  padding: 4px;
 }
