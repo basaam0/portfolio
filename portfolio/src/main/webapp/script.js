@@ -125,52 +125,44 @@ function updateColorTheme(backgroundTheme) {
  * Displays either the form to post a comment if the user is logged in or a link to login if they are not
  * and displays the list of comments. 
  */
-function loadCommentsSection() {
-  getCommentsForm();
-  getComments();
+async function loadCommentsSection() {
+  const maxComments = document.getElementById('max-comments').value;
+  const sortOption = document.getElementById('sort-option').value;
+  const response = await fetch(`/data?max-comments=${maxComments}&sort-option=${sortOption}`);
+  const json = await response.json();
+
+  getCommentsForm(json);
+  getComments(json.comments);
 }
 
 /**
  * Fetches the login status from the server and either unhides the form to post a comment if the user is 
- * logged in or adds a login link to the DOM. 
+ * logged in or adds a login link to the DOM if the user is not logged in. 
  */
-async function getCommentsForm() {
+async function getCommentsForm(json) {
   const response = await fetch('/login-status');
   const isLoggedIn = await response.json();
 
+  const loginContainer = document.getElementById('login-container');
+
   if (isLoggedIn) {
+    // Unhide the form to post comments, which is hidden by default.
     const commentsForm = document.getElementById('post-comment');
-
-    // Unhide the form, which is hidden by default.
     commentsForm.style.display = 'block';
-  } else {
-    const loginLinkContainer = document.getElementById('login-link-container');
-    const loginUrl = await getLoginUrl();
 
+    // Display the user's email and a link to logout.
+    loginContainer.innerHTML = `<p>You are currently logged in as ${json.email}.` +
+        `Click <a href="${json.logoutUrl}">here</a> to logout.</p>`;
+  } else {
     // Display the login link.
-    loginLinkContainer.innerHTML = `<p>Please login <a href="${loginUrl}">here</a></p>`;
+    loginContainer.innerHTML = `<p>Please login <a href="${json.loginUrl}">here</a>.</p>`;
   }
 }
 
 /**
- * Fetches and returns a login link from the server.
+ * Adds a list of comments to the DOM.
  */
-async function getLoginUrl() {
-  const response = await fetch('/login');
-  const loginUrl = await response.json();
-  return loginUrl;
-}
-
-/**
- * Fetches the list of comments from the server and adds them to the DOM.
- */
-async function getComments() {
-  const maxComments = document.getElementById('max-comments').value;
-  const sortOption = document.getElementById('sort-option').value;
-
-  const response = await fetch(`/data?max-comments=${maxComments}&sort-option=${sortOption}`);
-  const comments = await response.json();
-
+async function getComments(comments) {
   const commentsContainer = document.getElementById('comments-container');
   commentsContainer.innerHTML = '';
 
@@ -234,7 +226,7 @@ async function postComment(event) {
 
   // Clear out the form input.
   authorInput.value = commentInput.value = '';
-  getComments();
+  loadCommentsSection();
 }
 
 /**
@@ -245,5 +237,5 @@ async function deleteAllComments() {
     method: 'POST'
   });
   
-  getComments();
+  loadCommentsSection();
 }

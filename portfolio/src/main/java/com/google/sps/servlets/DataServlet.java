@@ -16,6 +16,8 @@ package com.google.sps.servlets;
 
 import com.google.sps.data.Comment;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonElement;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -23,6 +25,8 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +38,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /** 
- * Servlet with a GET handler that loads a list of comments from Datastore and 
+ * Servlet with a GET handler that loads a list of comments from Datastore, checks
+ * whether the user is logged in, and sends back either the user's email, name, and
+ * a link to logout if they are logged in or a link to login if they are not; and  
  * a POST handler that stores a new comment in Datastore.
  */
 @WebServlet("/data")
@@ -46,6 +52,25 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    JsonObject json = new JsonObject();
+    UserService userService = UserServiceFactory.getUserService();
+
+    if (userService.isUserLoggedIn()) {
+      String urlToRedirectToAfterUserLogsOut = "/";
+      String logoutUrl = userService.createLogoutURL(urlToRedirectToAfterUserLogsOut);
+      String userEmail = userService.getCurrentUser().getEmail();
+      String name = userService.getCurrentUser().getNickname(); 
+
+      json.addProperty("logoutUrl", logoutUrl);
+      json.addProperty("email", userEmail);
+      json.addProperty("name", name);
+    } else {
+      // Add a login link to the response if the user is not logged in.
+      String urlToRedirectToAfterUserLogsIn = "/";
+      String loginUrl = userService.createLoginURL(urlToRedirectToAfterUserLogsIn);
+      json.addProperty("loginUrl", loginUrl);
+    }
+    
     int maxComments = getMaxCommentsToReturn(request);
 
     // Query up to maxComments comment entities from Datastore with the user's specified sorting option.
@@ -63,12 +88,13 @@ public class DataServlet extends HttpServlet {
       return new Comment(id, author, commentText, timestamp);
     }).collect(Collectors.toList());
 
-    // Convert the list of comments to JSON.
-    String json = convertToJson(comments);
+    // Convert the list of comments to a JsonElement.
+    JsonElement commentsJsonElement = convertToJsonElement(comments);
+    json.add("comments", commentsJsonElement);
 
     // Send the JSON as the response.
-    response.setContentType("text/html;");
-    response.getWriter().println(json);
+    response.setContentType("application/json;");
+    response.getWriter().println(json.toString());
   }
 
   /** 
@@ -116,12 +142,12 @@ public class DataServlet extends HttpServlet {
   }
 
   /**
-   * Converts a List into a JSON string using the Gson library.
+   * Converts a List into a JsonElement using the Gson library.
    */
-  private String convertToJson(List list) {
+  private JsonElement convertToJsonElement(List list) {
     Gson gson = new Gson();
-    String json = gson.toJson(list);
-    return json;
+    JsonElement jsonElement = gson.toJsonTree(list);
+    return jsonElement;
   }
 
   @Override

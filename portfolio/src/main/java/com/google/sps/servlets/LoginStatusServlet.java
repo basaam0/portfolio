@@ -37,7 +37,7 @@ public class LoginStatusServlet extends HttpServlet {
     String json = convertToJson(userService.isUserLoggedIn());
     
     // Send the JSON as the response.
-    response.setContentType("text/html;");
+    response.setContentType("application/json;");
     response.getWriter().println(json);
   }
 
