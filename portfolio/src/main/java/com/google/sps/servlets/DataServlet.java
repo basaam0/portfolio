@@ -15,6 +15,7 @@
 package com.google.sps.servlets;
 
 import com.google.sps.data.Comment;
+import com.google.sps.servlets.NameServlet;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonElement;
@@ -56,10 +57,17 @@ public class DataServlet extends HttpServlet {
     UserService userService = UserServiceFactory.getUserService();
 
     if (userService.isUserLoggedIn()) {
+      String name = getUserName(userService.getCurrentUser().getUserId());
+
+      // If the user has logged in for the first time, set their name as their Google account nickname.
+      if (name == null) {
+        name = userService.getCurrentUser().getNickname();
+        NameServlet.upsertUserInfo(name);
+      }
+
       String urlToRedirectToAfterUserLogsOut = "/";
       String logoutUrl = userService.createLogoutURL(urlToRedirectToAfterUserLogsOut);
       String userEmail = userService.getCurrentUser().getEmail();
-      String name = userService.getCurrentUser().getNickname();
 
       json.addProperty("logoutUrl", logoutUrl);
       json.addProperty("email", userEmail);
@@ -95,6 +103,25 @@ public class DataServlet extends HttpServlet {
     // Send the JSON as the response.
     response.setContentType("application/json;");
     response.getWriter().println(json.toString());
+  }
+
+  /** 
+   * Returns the name of the user with id, or null if a name has not been set. 
+   */
+  private String getUserName(String id) {
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    Query query =
+        new Query("UserInfo")
+            .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, id));
+    PreparedQuery results = datastore.prepare(query);
+    
+    Entity entity = results.asSingleEntity();
+    if (entity == null) {
+      return null;
+    }
+
+    String name = (String) entity.getProperty("name");
+    return name;
   }
 
   /** 
@@ -152,10 +179,13 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // Get the nickname of the logged-in user.
     UserService userService = UserServiceFactory.getUserService();
-    String author = userService.getCurrentUser().getNickname();
+    if (!userService.isUserLoggedIn()) {
+      response.sendRedirect("/index.html");
+      return;
+    }
 
+    String author = getUserName(userService.getCurrentUser().getUserId());
     String commentText = request.getParameter("comment");
     long timestamp = System.currentTimeMillis();
     
