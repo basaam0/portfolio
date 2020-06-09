@@ -144,8 +144,20 @@ async function getComments() {
     // Create <h4> and <p> elements for each comment's author and text.
     comments.forEach((comment) => {
       const commentElement = document.createElement('div');
+
+      // Put the date in the format "Tuesday, June 9, 2020, 5:35 PM". 
+      const dateFormatOptions = {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true,
+      };
+      const formattedDate = new Date(comment.timestamp).toLocaleString('en-US', dateFormatOptions);
       
-      const pElement = createTextElement(commentElement, 'p', comment.formattedDate);
+      const pElement = createTextElement(commentElement, 'p', formattedDate);
       pElement.classList.add('comment-date');
       createTextElement(commentElement, 'h4', comment.author);
       createTextElement(commentElement, 'p', comment.commentText);
