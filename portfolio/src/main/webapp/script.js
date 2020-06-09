@@ -217,15 +217,13 @@ async function postComment(event) {
   // Prevent the default action of reloading the page to prevent the background theme from resetting.
   event.preventDefault();
 
-  const authorInput = document.getElementById('author-input');
   const commentInput = document.getElementById('comment-input');
-
-  const response = await fetch(`/data?author=${authorInput.value}&comment=${commentInput.value}`, {
+  const response = await fetch(`/data?comment=${commentInput.value}`, {
     method: 'POST'
   });
 
   // Clear out the form input.
-  authorInput.value = commentInput.value = '';
+  commentInput.value = '';
   loadCommentsSection();
 }
 

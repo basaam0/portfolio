@@ -59,7 +59,7 @@ public class DataServlet extends HttpServlet {
       String urlToRedirectToAfterUserLogsOut = "/";
       String logoutUrl = userService.createLogoutURL(urlToRedirectToAfterUserLogsOut);
       String userEmail = userService.getCurrentUser().getEmail();
-      String name = userService.getCurrentUser().getNickname(); 
+      String name = userService.getCurrentUser().getNickname();
 
       json.addProperty("logoutUrl", logoutUrl);
       json.addProperty("email", userEmail);
@@ -152,15 +152,11 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // Get the input from the form.
-    String author = request.getParameter("author");
-    String commentText = request.getParameter("comment");
-    
-    // Use the default author "Anonymous" if none is provided.
-    if (author.isEmpty()) {
-      author = Comment.DEFAULT_AUTHOR;
-    }
+    // Get the nickname of the logged-in user.
+    UserService userService = UserServiceFactory.getUserService();
+    String author = userService.getCurrentUser().getNickname();
 
+    String commentText = request.getParameter("comment");
     long timestamp = System.currentTimeMillis();
     
     // Create an entity with a kind of Comment.
