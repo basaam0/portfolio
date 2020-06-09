@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -39,6 +40,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
+  // Logs to System.err by default.
   private static final Logger LOGGER = Logger.getLogger(DataServlet.class.getName());
   private static final int DEFAULT_MAX_COMMENTS = 10;
 
@@ -52,16 +54,14 @@ public class DataServlet extends HttpServlet {
     List<Entity> results = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(maxComments));
 
     // Construct a list of comments from the queried entities.
-    List<Comment> comments = new ArrayList<>();
-    for (Entity entity : results) {
+    List<Comment> comments = results.stream().map((entity) -> {
       long id = entity.getKey().getId();
       String author = (String) entity.getProperty("author");
       String commentText = (String) entity.getProperty("commentText");
       long timestamp = (long) entity.getProperty("timestamp");
 
-      Comment comment = new Comment(id, author, commentText, timestamp);
-      comments.add(comment);
-    }
+      return new Comment(id, author, commentText, timestamp);
+    }).collect(Collectors.toList());
 
     // Convert the list of comments to JSON.
     String json = convertToJson(comments);
