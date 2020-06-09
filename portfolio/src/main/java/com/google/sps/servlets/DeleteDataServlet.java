@@ -21,6 +21,7 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.common.collect.Iterables;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -42,9 +43,8 @@ public class DeleteDataServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);
 
     // Delete all comment entities from Datastore.
-    for (Entity entity : results.asIterable()) {
-      datastore.delete(entity.getKey());
-    }
+    Iterable<Key> keysToDelete = Iterables.transform(results.asIterable(), Entity::getKey);
+    datastore.delete(keysToDelete);
 
     // Redirect back to the HTML page.
     response.sendRedirect("/index.html");
