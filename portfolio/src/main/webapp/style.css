@@ -15,7 +15,7 @@
 
 html {
   background: url(images/forest.jpg) center/100% no-repeat fixed;
-  font-family: 'Source Sans Pro', sans-serif;;
+  font-family: 'Source Sans Pro', sans-serif;
   height: 100%;
 }
 
@@ -38,23 +38,25 @@ body {
   float: right;
 }
 
-button,
-#submit-comment {
+button {
   cursor: pointer;
   outline: none;
 }
 
+button:hover {
+  box-shadow: 0 0 10px teal;
+}
+
 .portfolio-section button,
-#submit-comment {
+#comments-form-container button {
   background: var(--button-bg-color);
   border: solid 4px transparent;
   border-radius: 10px;
-  margin: 0 90px;
 }
 
-button:hover,
-#submit-comment:hover {
-  box-shadow: 0 0 10px teal;
+#submit-comment,
+#submit-name {
+  margin: 0 120px;
 }
 
 /* Main content */
@@ -134,13 +136,20 @@ ul {
 
 /* Comments Section */
 
+#login-container {
+  background: rgba(255,255,255,.4);
+  padding: 5px;
+  text-align: center;
+}
+
+#update-name,
 #post-comment {
   background: rgba(255,255,255,.4);
   display: none;
   padding: 5px;
 }
 
-#author-input,
+#user-name-input,
 #comment-input {
   border: solid 1px var(--primary-theme-color);
 }
@@ -154,8 +163,8 @@ ul {
   margin: 0px 10px;
 }
 
-#author-label {
-  margin: 0 22px;
+#comment-text-label {
+  margin: 0 34px 0 10px;
 }
 
 #max-comments {

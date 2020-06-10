@@ -114,17 +114,24 @@
     <h3>Post a comment:</h3>
     <br>
     <div id="login-container"></div>
-    
+    <br>
+    <form id="update-name" action="#" onsubmit="updateUserName(event)">
+
+      <label class="comments-label" for="user-name">Display Name:</label>
+      <input id="user-name-input" type="text" name="user-name" placeholder="Your Name" 
+          pattern="[a-zA-Z0-9]{1,10}" title="Alphanumeric with between one and ten characters" required>
+      <br><br>
+
+      <button id="submit-name" type="submit">Update Name</button>
+    </form>
+    <br>
     <form id="post-comment" action="#" onsubmit="postComment(event)">
       
-      <label id="author-label" for="author">Name:</label>
-      <input id="author-input" type="text" name="author" placeholder="Your Name" disabled>
-      <br><br>
-      <label class="comments-label" for="comment">Comment:</label>
+      <label id="comment-text-label" class="comments-label" for="comment">Comment:</label>
       <textarea id="comment-input" name="comment" placeholder="Comment" required></textarea>
       <br><br>
 
-      <input id="submit-comment" type="submit">
+      <button id="submit-comment" type="submit">Post Comment</button>
     </form>
   </div>
   <br>

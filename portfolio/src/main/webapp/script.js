@@ -146,16 +146,29 @@ async function getCommentsForm(json) {
   const loginContainer = document.getElementById('login-container');
 
   if (isLoggedIn) {
-    // Unhide the form to post comments, which is hidden by default.
+    // Unhide the forms to update the display name and post comments, which are hidden by default.
+    const updateNameForm = document.getElementById('update-name');
     const commentsForm = document.getElementById('post-comment');
-    commentsForm.style.display = 'block';
+    updateNameForm.style.display = commentsForm.style.display = 'block';
 
-    // Display the user's email and a link to logout.
-    loginContainer.innerHTML = `<p>You are currently logged in as ${json.email}.` +
-        `Click <a href="${json.logoutUrl}">here</a> to logout.</p>`;
+    // Populate the placeholder in the update name form with the stored name.
+    const userNameInput = document.getElementById('user-name-input');
+    userNameInput.placeholder = json.name;
+
+    // Display the user's name.
+    let html = `<p>You are currently logged in as ${json.name}`;
+
+    // Avoid displaying the email twice if it is the same as the name (which is the default).
+    if (json.name !== json.email) {
+      html += ` (${json.email})`;
+    }
+
+    // Display a link to logout
+    html += `.<p>Click <a href="${json.logoutUrl}">here</a> to logout.`;
+    loginContainer.innerHTML = html;
   } else {
     // Display the login link.
-    loginContainer.innerHTML = `<p>Please login <a href="${json.loginUrl}">here</a>.</p>`;
+    loginContainer.innerHTML = `<p>Please login <a href="${json.loginUrl}">here</a>.`;
   }
 }
 
@@ -208,6 +221,24 @@ function createTextElement(parentElement, htmlTag, innerText) {
   element.innerText = innerText;
   parentElement.appendChild(element);
   return element;
+}
+
+/**
+ * Updates the name associated with the logged-in user and reloads the comments section 
+ * to display the updated greeting.
+ */
+async function updateUserName(event) {
+  // Prevent the default action of reloading the page to prevent the background theme from resetting.
+  event.preventDefault();
+
+  const userNameInput = document.getElementById('user-name-input');
+  const response = await fetch(`/name?new-name=${userNameInput.value}`, {
+    method: 'POST'
+  });
+
+  // Clear out the form input.
+  userNameInput.value = '';
+  loadCommentsSection();
 }
 
 /**

@@ -20,6 +20,8 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +33,9 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/name")
 public class NameServlet extends HttpServlet {
 
+  // Matches alphanumeric names that are between one and ten characters long.
+  private static final Pattern validName = Pattern.compile("^[a-zA-Z0-9]{1,10}$");
+
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
@@ -39,11 +44,19 @@ public class NameServlet extends HttpServlet {
       return;
     }
 
-    String name = request.getParameter("name");
-    upsertUserInfo(name);
-    response.sendRedirect("/index.html");
+    String name = request.getParameter("new-name");
+    if (isValidName(name)) {
+      upsertUserInfo(name);
+    }
   }
   
+  /**
+   * Checks if the name is composed of only letters and digits and is between 
+   * one and ten characters in length.
+   */
+  private boolean isValidName(String name) {
+    return validName.matcher(name).matches();
+  }
 
   /**
    * Inserts a new user info entity with the given name in datastore or updates the name in an existing entity
