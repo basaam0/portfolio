@@ -143,7 +143,8 @@ async function getCommentsForm(json) {
   const response = await fetch('/login-status');
   const isLoggedIn = await response.json();
 
-  const loginContainer = document.getElementById('login-container');
+  const loginMessageContainer = document.getElementById('login-message-container');
+  const loginLogoutLinkElement = document.getElementById('login-logout-link');
 
   if (isLoggedIn) {
     // Unhide the forms to update the display name and post comments, which are hidden by default.
@@ -163,12 +164,17 @@ async function getCommentsForm(json) {
       html += ` (${json.email})`;
     }
 
-    // Display a link to logout
-    html += `.<p>Click <a href="${json.logoutUrl}">here</a> to logout.`;
-    loginContainer.innerHTML = html;
+    loginMessageContainer.innerHTML = html;
+
+    // Display a link to logout.
+    loginLogoutLinkElement.href = json.logoutUrl;
+    loginLogoutLinkElement.innerText = 'Logout';
   } else {
+    loginMessageContainer.innerHTML = '<p>Please login to post a comment.';
+
     // Display the login link.
-    loginContainer.innerHTML = `<p>Please login <a href="${json.loginUrl}">here</a>.`;
+    loginLogoutLinkElement.href = json.loginUrl;
+    loginLogoutLinkElement.innerText = 'Login';
   }
 }
 
