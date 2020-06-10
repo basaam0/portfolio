@@ -33,8 +33,8 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/name")
 public class NameServlet extends HttpServlet {
 
-  // Matches alphanumeric names that are between one and ten characters long.
-  private static final Pattern validName = Pattern.compile("^[a-zA-Z0-9]{1,10}$");
+  // Matches names composed of letters, digits, underscores, and spaces between three and twenty characters long.
+  private static final Pattern validName = Pattern.compile("^[\\w ]{3,20}$");
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -51,8 +51,8 @@ public class NameServlet extends HttpServlet {
   }
   
   /**
-   * Checks if the name is composed of only letters and digits and is between 
-   * one and ten characters in length.
+   * Checks if the name is composed of only letters, digits, underscores,
+   * and spaces and is between three and twenty characters in length.
    */
   private boolean isValidName(String name) {
     return validName.matcher(name).matches();

@@ -123,7 +123,8 @@
 
       <label class="comments-label" for="user-name">Display Name:</label>
       <input id="user-name-input" type="text" name="user-name" placeholder="Your Name" 
-          pattern="[a-zA-Z0-9]{1,10}" title="Alphanumeric with between one and ten characters" required>
+          pattern="[\w ]{3,20}" title="Composed of only letters, digits, underscores,
+          and spaces with between three and twenty characters" required>
       <br><br>
 
       <button id="submit-name" type="submit">Update Name</button>
