@@ -50,7 +50,7 @@ public class DataServlet extends HttpServlet {
 
     // Query up to maxComments comment entities from Datastore with the user's specified sorting option.
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Query query = setSortOption(request, new Query("Comment"));
+    Query query = createCommentQuery(request);
     List<Entity> results = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(maxComments));
 
     // Construct a list of comments from the queried entities.
@@ -97,17 +97,19 @@ public class DataServlet extends HttpServlet {
   }
 
   /**
-   * Applies the sorting option specified by the user to the query.
+   * Creates and returns a query for comments with the sorting option
+   * specified by the user applied.
    */
-  private Query setSortOption(HttpServletRequest request, Query query) {
-    String sortOptionString = request.getParameter("sort-option");
+  private Query createCommentQuery(HttpServletRequest request) {
+    Query query = new Query("Comment");
+    String sortOption = request.getParameter("sort-option");
     
-    if (sortOptionString.equals("newest")) {
-      query = query.addSort("timestamp", SortDirection.DESCENDING);
-    } else if (sortOptionString.equals("oldest")) {
-      query = query.addSort("timestamp", SortDirection.ASCENDING);
-    } else if (sortOptionString.equals("name")) {
-      query = query.addSort("author", SortDirection.ASCENDING);
+    if (sortOption.equals("newest")) {
+      return query.addSort("timestamp", SortDirection.DESCENDING);
+    } else if (sortOption.equals("oldest")) {
+      return query.addSort("timestamp", SortDirection.ASCENDING);
+    } else if (sortOption.equals("name")) {
+      return query.addSort("author", SortDirection.ASCENDING);
     }
 
     return query;
