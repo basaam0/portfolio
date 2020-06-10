@@ -128,7 +128,14 @@ function updateColorTheme(backgroundTheme) {
 async function loadCommentsSection() {
   const maxComments = document.getElementById('max-comments').value;
   const sortOption = document.getElementById('sort-option').value;
-  const response = await fetch(`/data?max-comments=${maxComments}&sort-option=${sortOption}`);
+  const languageCode = document.getElementById('language').value;
+
+  const params = new URLSearchParams();
+  params.append('max-comments', maxComments);
+  params.append('sort-option', sortOption);
+  params.append('language-code', languageCode);
+
+  const response = await fetch(`/data?${params.toString()}`);
   const json = await response.json();
 
   getCommentsForm(json);
