@@ -4,6 +4,7 @@
 
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet">
 <link rel="icon" href="favicon.ico">
 
 <script src="script.js"></script>
@@ -27,87 +28,111 @@
       as well as a business minor in Innovation and Entrepreneurship.
 
   <h2>Education</h2>
-  <h3>University of Maryland, College Park</h3>
-  <p>2019 - Present (Expected 2023)
-  <ul>
-    <li>Majors: Computer Science, Applied Mathematics
-    <li>Minors: Advanced Cybersecurity Experience for Students (ACES), Innovation and Entrepreneurship (Business)
-    <li>ACES Honors Living-Learning Program
-    <li>Banneker/Key Full-Ride Merit Scholarship
-    <li>Computer Science Departmental Honors
-  </ul>
-  <h3>Thomas S. Wootton High School</h3>
-  <p>2015 - 2019
-  <ul>
-    <li>Academy of Information Technology (AOIT) Signature Program
-    <li>Science, Technology, and Research Scholars (STARS) Program
-  </ul>
+  <div class="portfolio-section">
+    <h3>University of Maryland, College Park</h3>
+    <p>2019 - Present (Expected 2023)
+    <ul>
+      <li>Majors: Computer Science, Applied Mathematics
+      <li>Minors: Advanced Cybersecurity Experience for Students (ACES), Innovation and Entrepreneurship (Business)
+      <li>ACES Honors Living-Learning Program
+      <li>Banneker/Key Full-Ride Merit Scholarship
+      <li>Computer Science Departmental Honors
+    </ul>
+    <h3>Thomas S. Wootton High School</h3>
+    <p>2015 - 2019
+    <ul>
+      <li>Academy of Information Technology (AOIT) Signature Program
+      <li>Science, Technology, and Research Scholars (STARS) Program
+    </ul>
+  </div>
 
   <h2>Experience</h2>
-  <h3>Google - Student Training in Engineering Program (STEP) Intern</h3>
-  <p>May 2020 - Present
-  <h3>Capital One - Software Engineering Summit Participant</h3>
-  <p>Jan 2020
-  <h3>Pathover, Inc - Back-End Web Developer Intern</h3>
-  <p>Jun 2018 - Aug 2019
+  <div class="portfolio-section">
+    <h3>Google - Student Training in Engineering Program (STEP) Intern</h3>
+    <p>May 2020 - Present
+    <br><br>
+    <h3>Capital One - Software Engineering Summit Participant</h3>
+    <p>Jan 2020
+    <br><br>
+    <h3>Pathover, Inc - Back-End Web Developer Intern</h3>
+    <p>Jun 2018 - Aug 2019
+  </div>
 
   <h2>Skills</h2>
-  <ul>
-    <li>Languages: Java, JavaScript, C, OCaml, Ruby, HTML/CSS
-    <li>Technologies: Bash Scripting, Node.js, Express.js, Sequelize, PostgreSQL, Mocha, Chai
-    <li>Tools: Android Studio, Git, GDB, Unix Command Line, Kali Linux, Wireshark, Ghidra, Arduino
-  </ul>
+  <div class="portfolio-section">
+    <ul>
+      <li>Languages: Java, JavaScript, C, OCaml, Ruby, HTML/CSS
+      <li>Technologies: Bash Scripting, Node.js, Express.js, Sequelize, PostgreSQL, Mocha, Chai
+      <li>Tools: Android Studio, Git, GDB, Unix Command Line, Kali Linux, Wireshark, Ghidra, Arduino
+    </ul>
+  </div>
 
   <h2>Courses</h2>
-  <h4>Enrolled:</h4>
-  <ul>
-    <li>Design and Analysis of Computer Algorithms
-    <li>Computer and Network Security
-    <li>Applied Cybersecurity Foundations II
-    <li>Advanced Calculus I
-    <li>Introduction to Probability Theory
-  </ul>
-  <h4>Completed:</h4>
-  <ul>
-    <li>Algorithms
-    <li>Organization of Programming Languages
-    <li>Introduction to Computer Systems
-    <li>Discrete Structures
-    <li>Honors Multivariable Calculus, Linear Algebra, and Differential Equations I & II
-    <li>Introduction to Reverse Engineering
-    <li>Accounting and Economic Impacts of Cybersecurity
-    <li>Applied Cybersecurity Foundations I
-    <li>Foundations of Cybersecurity
-  </ul>
+  <div class="portfolio-section">
+    <h4>Enrolled:</h4>
+    <ul>
+      <li>Design and Analysis of Computer Algorithms
+      <li>Computer and Network Security
+      <li>Applied Cybersecurity Foundations II
+      <li>Advanced Calculus I
+      <li>Introduction to Probability Theory
+    </ul>
+    <h4>Completed:</h4>
+    <ul>
+      <li>Algorithms
+      <li>Organization of Programming Languages
+      <li>Introduction to Computer Systems
+      <li>Discrete Structures
+      <li>Honors Multivariable Calculus, Linear Algebra, and Differential Equations I & II
+      <li>Introduction to Reverse Engineering
+      <li>Accounting and Economic Impacts of Cybersecurity
+      <li>Applied Cybersecurity Foundations I
+      <li>Foundations of Cybersecurity
+    </ul>
+  </div>
 
   <h2>Activities</h2>
-  <ul>
-    <li>Cybersecurity Club
-    <li>ACES Competition Team
-    <li>Data and Cloud Computing Society
-    <li>Maryland Science Olympiad Club
-  </ul>
+  <div class="portfolio-section">
+    <ul>
+      <li>Cybersecurity Club
+      <li>ACES Competition Team
+      <li>Data and Cloud Computing Society
+      <li>Maryland Science Olympiad Club
+    </ul>
+  </div>
 
   <h2>Facts</h2>
-  <p>Click here to get a random fact about me:
-  <button onclick="addRandomFact()">Click Here</button>
-  <div id="fact-container"></div>
+  <div class="portfolio-section" id="facts">
+    <p>Click here to get a random fact about me:
+    <br><br>
+    <button onclick="addRandomFact()">Click Here</button>
+    <div id="fact-container"></div>
+  </div>
 
   <h2>Comments</h2>
-  <form id="post-comment" action="/data" method="POST">
+  <form id="post-comment" action="#" onsubmit="postComment(event)">
     
-    <p>Post a comment:
+    <h3>Post a comment:</h3>
+    <br>
+    <label id="author-label" for="author">Name:</label>
+    <input id="author-input" type="text" name="author" placeholder="Your Name">
     <br><br>
-    <input type="text" name="author" placeholder="Your Name">
-    <br><br>
-    <textarea name="comment" placeholder="Comment" required></textarea>
+    <label class="comments-label" for="comment">Comment:</label>
+    <textarea id="comment-input" name="comment" placeholder="Comment" required></textarea>
     <br><br>
 
-    <input type="submit">
+    <input id="submit-comment" type="submit">
   </form>
   <br>
   <label class="comments-label" for="max-comments">Maximum Number of Comments:</label>
   <input type="number" id="max-comments" name="max-comments" min="1" value="5" onchange="getComments()">
+
+  <label class="comments-label" for="sort-option">Sort By:</label>
+  <select id="sort-option" name="sort-option" onchange="getComments()">
+    <option value="newest">Newest First</option>
+    <option value="oldest">Oldest First</option>
+    <option value="name">Alphabetically by Author</option>
+  </select>
 
   <div id="comments-container"></div>
   <button id="delete-comments" onclick="deleteAllComments()">⚠️ Delete All Comments ⚠️</button>

@@ -1,13 +1,21 @@
-/* Custom properties representing colors for the portfolio section headings */
+/* Custom properties representing colors for the background theme */
 
 :root {
-  --heading-color: #523029;
+  --button-bg-color: rgba(160,82,45,.7);
+  --comment-bg-color: rgba(255,255,255,.6);
   --heading-bg-color: rgba(160,82,45,.1);
+  --highlight-bg-color: rgba(0,255,0,.3);
+  --primary-theme-color: #523029;
+  --section-bg-color: rgba(255,255,255,.3);
+}
+
+::selection {
+  background: var(--highlight-bg-color);
 }
 
 html {
   background: url(images/forest.jpg) center/100% no-repeat fixed;
-  font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+  font-family: 'Source Sans Pro', sans-serif;;
   height: 100%;
 }
 
@@ -15,7 +23,7 @@ body {
   height: 100%;
 }
 
-/* Previous and next background buttons */
+/* Buttons */
 
 #prev-button,
 #next-button {
@@ -23,7 +31,6 @@ body {
   border: none;
   border-radius: 50%;
   font-size: 24px;
-  outline: none;
   text-align: center;
 }
 
@@ -31,15 +38,45 @@ body {
   float: right;
 }
 
+button,
+#submit-comment {
+  cursor: pointer;
+  outline: none;
+}
+
+.portfolio-section button,
+#submit-comment {
+  background: var(--button-bg-color);
+  border: solid 4px transparent;
+  border-radius: 10px;
+  margin: 0 90px;
+}
+
+button:hover,
+#submit-comment:hover {
+  box-shadow: 0 0 10px teal;
+}
+
+/* Main content */
+
 #content {
+  animation: fade-in ease 5s;
   background: rgba(255,255,255,.45);
   margin: 0 auto;
   padding: 0 0 30px;
   width: 40%;
 }
 
+.portfolio-section {
+  background: var(--section-bg-color);
+}
+
+#facts {
+  text-align: center; 
+}
+
 #fact-container {
-  margin: 20px 0 0;
+  margin: 20px 8px 0;
 }
 
 h1 {
@@ -49,7 +86,7 @@ h1 {
 
 h2 {
   background: var(--heading-bg-color);
-  color: var(--heading-color);
+  color: var(--primary-theme-color);
   padding: 0 5px;
 }
 
@@ -63,6 +100,17 @@ p {
 ul {
   margin: 0 0 1em;
 }
+
+/* Animation */
+
+@keyframes fade-in { 
+  0% { 
+    opacity: 0; 
+  } 
+  100% { 
+    opacity: 1; 
+  } 
+} 
 
 /* GitHub and LinkedIn Icons */
 
@@ -87,16 +135,26 @@ ul {
 /* Comments Section */
 
 #post-comment {
+  background: rgba(255,255,255,.4);
   padding: 5px;
 }
 
-#post-comment textarea {
+#author-input,
+#comment-input {
+  border: solid 1px var(--primary-theme-color);
+}
+
+#comment-input {
   height: 5vh;
   width: 50%;
 }
 
 .comments-label {
-  margin: 0px 10px 0;
+  margin: 0px 10px;
+}
+
+#author-label {
+  margin: 0 22px;
 }
 
 #max-comments {
@@ -108,19 +166,30 @@ ul {
 }
 
 #comments-container div {
-  background: rgba(255,255,255,.6);
-  border: solid 1px black;
-  margin: 20px 0 20px;
-  padding: 3px;
+  background: var(--comment-bg-color);
+  border: solid 1px var(--primary-theme-color);
+  border-radius: 30px;
+  margin: 20px 0;
+  padding: 4px 10px;
+}
+
+.comment-date {
+  color: gray;
+  float: right;
+}
+
+#empty-comment {
+  margin: 8px 0;
+  text-align: center;
 }
 
 #delete-comments {
   background: red;
-  border: none;
+  border: solid 2px transparent;
+  border-radius: 15px;
   color: white;
   display: block;
   font-size: 14px;
   margin: auto;
-  outline: none;
   padding: 4px;
 }

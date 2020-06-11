@@ -52,28 +52,40 @@ let currentBackgroundIndex = 0;
 const backgroundThemes = [
   {
     img: 'forest.jpg',
-    headingColor: '#523029',
+    primaryColor: '#523029',
     headingBgColor: 'rgba(160,82,45,.1)',
+    highlightBgColor: 'rgba(34,139,34,.3)',
+    buttonBgColor: 'rgba(160,82,45,.7)',
   }, {
     img: 'ocean.jpg',
-    headingColor: 'navy',
+    primaryColor: 'navy',
     headingBgColor: 'rgba(65,105,225,.1)',
+    highlightBgColor: 'rgba(0,191,255,.2)',
+    buttonBgColor: 'rgba(135,206,235,.9)',
   }, {
     img: 'mountain.jpg',
-    headingColor: 'midnightblue',
+    primaryColor: 'midnightblue',
     headingBgColor: 'rgba(0,128,128,.15)',
+    highlightBgColor: 'rgba(25,25,112,.2)',
+    buttonBgColor: 'rgba(175, 238, 238,.9)'
   }, {
     img: 'balloons.jpg',
-    headingColor: 'indianred',
+    primaryColor: 'indianred',
     headingBgColor: 'rgba(255,215,0,.2)',
+    highlightBgColor: 'rgba(255,165,0,.5)',
+    buttonBgColor: 'rgba(255,69,0,.7)',
   }, {
     img: 'iceberg.jpg',
-    headingColor: 'darkslategray',
+    primaryColor: 'darkslategray',
     headingBgColor: 'rgba(72,61,139,.2)',
+    highlightBgColor: 'rgba(0,50,128,.4)',
+    buttonBgColor: 'rgba(90,150,150,.9)',
   }, {
     img: 'grass.jpg',
-    headingColor: 'green',
+    primaryColor: 'green',
     headingBgColor: 'rgba(173,255,47,.2)',
+    highlightBgColor: 'rgba(0,255,0,.4)',
+    buttonBgColor: 'rgba(127,255,0,.9)',
   },
 ];
 
@@ -89,22 +101,24 @@ function changeBackground(offset) {
     currentBackgroundIndex += backgroundThemes.length;
   }
 
-  const newBackground = backgroundThemes[currentBackgroundIndex];
+  const newBackgroundTheme = backgroundThemes[currentBackgroundIndex];
 
   // Update the page with the new background image.
   const html = document.documentElement;
-  html.style.backgroundImage = `url(images/${newBackground.img})`;
+  html.style.backgroundImage = `url(images/${newBackgroundTheme.img})`;
 
-  // Update the headings to the color theme for the new image.
-  updateColorTheme(newBackground.headingColor, newBackground.headingBgColor);
+  // Update the color theme based on the new background image.
+  updateColorTheme(newBackgroundTheme);
 }
 
 /**
- * Updates the heading color CSS properties.
+ * Updates the CSS properties for the color theme.
  */
-function updateColorTheme(headingColor, headingBgColor) {
-  document.body.style.setProperty('--heading-color', headingColor);
-  document.body.style.setProperty('--heading-bg-color', headingBgColor);
+function updateColorTheme(backgroundTheme) {
+  document.body.style.setProperty('--primary-theme-color', backgroundTheme.primaryColor);
+  document.body.style.setProperty('--heading-bg-color', backgroundTheme.headingBgColor);
+  document.body.style.setProperty('--highlight-bg-color', backgroundTheme.highlightBgColor);
+  document.body.style.setProperty('--button-bg-color', backgroundTheme.buttonBgColor);
 }
 
 /**
@@ -112,19 +126,45 @@ function updateColorTheme(headingColor, headingBgColor) {
  */
 async function getComments() {
   const maxComments = document.getElementById('max-comments').value;
-  const response = await fetch(`/data?max-comments=${maxComments}`);
+  const sortOption = document.getElementById('sort-option').value;
+
+  const response = await fetch(`/data?max-comments=${maxComments}&sort-option=${sortOption}`);
   const comments = await response.json();
 
   const commentsContainer = document.getElementById('comments-container');
   commentsContainer.innerHTML = '';
 
-  // Create <h4> and <p> elements for each comment's author and text.
-  comments.forEach((comment) => {
+  // Add a message if there are no comments.
+  if (comments.length === 0) {
     const commentElement = document.createElement('div');
-    createTextElement(commentElement, 'h4', comment.author);
-    createTextElement(commentElement, 'p', comment.commentText);
+    const pElement = createTextElement(commentElement, 'p', 'No comments here...');
+    pElement.id = 'empty-comment';
     commentsContainer.appendChild(commentElement);
-  });
+  } else {
+    // Create <h4> and <p> elements for each comment's author and text.
+    comments.forEach((comment) => {
+      const commentElement = document.createElement('div');
+
+      // Put the date in the format "Tuesday, June 9, 2020, 5:35 PM". 
+      const dateFormatOptions = {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true,
+      };
+      const formattedDate = new Date(comment.timestamp).toLocaleString('en-US', dateFormatOptions);
+      
+      const pElement = createTextElement(commentElement, 'p', formattedDate);
+      pElement.classList.add('comment-date');
+      createTextElement(commentElement, 'h4', comment.author);
+      createTextElement(commentElement, 'p', comment.commentText);
+
+      commentsContainer.appendChild(commentElement);
+    });
+  }
 }
 
 /**
@@ -136,6 +176,25 @@ function createTextElement(parentElement, htmlTag, innerText) {
   element.innerText = innerText;
   parentElement.appendChild(element);
   return element;
+}
+
+/**
+ * Posts a new comment to the server and updates the list of comments.
+ */
+async function postComment(event) {
+  // Prevent the default action of reloading the page to prevent the background theme from resetting.
+  event.preventDefault();
+
+  const authorInput = document.getElementById('author-input');
+  const commentInput = document.getElementById('comment-input');
+
+  const response = await fetch(`/data?author=${authorInput.value}&comment=${commentInput.value}`, {
+    method: 'POST'
+  });
+
+  // Clear out the form input.
+  authorInput.value = commentInput.value = '';
+  getComments();
 }
 
 /**

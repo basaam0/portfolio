@@ -48,9 +48,9 @@ public class DataServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     int maxComments = getMaxCommentsToReturn(request);
 
-    // Query up to maxComments comment entities from Datastore.
+    // Query up to maxComments comment entities from Datastore with the user's specified sorting option.
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
+    Query query = createCommentQuery(request);
     List<Entity> results = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(maxComments));
 
     // Construct a list of comments from the queried entities.
@@ -97,6 +97,25 @@ public class DataServlet extends HttpServlet {
   }
 
   /**
+   * Creates and returns a query for comments with the sorting option
+   * specified by the user applied.
+   */
+  private Query createCommentQuery(HttpServletRequest request) {
+    Query query = new Query("Comment");
+    String sortOption = request.getParameter("sort-option");
+    
+    if (sortOption.equals("newest")) {
+      return query.addSort("timestamp", SortDirection.DESCENDING);
+    } else if (sortOption.equals("oldest")) {
+      return query.addSort("timestamp", SortDirection.ASCENDING);
+    } else if (sortOption.equals("name")) {
+      return query.addSort("author", SortDirection.ASCENDING);
+    }
+
+    return query;
+  }
+
+  /**
    * Converts a List into a JSON string using the Gson library.
    */
   private String convertToJson(List list) {
@@ -127,8 +146,5 @@ public class DataServlet extends HttpServlet {
     // Store the comment entity in Datastore.
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(commentEntity);
-
-    // Redirect back to the HTML page.
-    response.sendRedirect("/index.html");
   }
 }
