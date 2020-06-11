@@ -283,7 +283,7 @@ async function postComment(event) {
   document.body.style.cursor = 'wait';
 
   const commentInput = document.getElementById('comment-input');
-  const response = await fetch(`/data?comment=${commentInput.value}`, {
+  const response = await fetch(`/data?comment=${encodeURIComponent(commentInput.value)}`, {
     method: 'POST'
   });
 

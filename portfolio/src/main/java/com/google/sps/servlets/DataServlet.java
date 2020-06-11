@@ -198,8 +198,9 @@ public class DataServlet extends HttpServlet {
 
     // Translate the list of comment texts.
     Translate translate = TranslateOptions.getDefaultInstance().getService();
-    List<Translation> translations =
-        translate.translate(commentTexts, Translate.TranslateOption.targetLanguage(languageCode));
+    List<Translation> translations = translate.translate(commentTexts, 
+        Translate.TranslateOption.targetLanguage(languageCode), 
+        Translate.TranslateOption.format("text"));
 
     // Map the translations to a stream of strings.
     return translations.stream().map(Translation::getTranslatedText);
