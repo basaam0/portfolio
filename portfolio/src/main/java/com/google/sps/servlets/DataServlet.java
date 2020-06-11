@@ -19,6 +19,7 @@ import com.google.sps.servlets.NameServlet;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonArray;
 import com.google.common.collect.Streams;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -90,28 +91,33 @@ public class DataServlet extends HttpServlet {
     Query query = createCommentQuery(request);
     List<Entity> results = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(maxComments));
 
-    // Construct a stream of comment texts from the queried entities.
-    Stream<String> commentTexts = results.stream().map((entity) -> {
-      String commentText = (String) entity.getProperty("commentText");
-      return commentText;
-    });
+    // Check if there are comments to translate.
+    if (results.isEmpty()) {
+      json.add("comments", new JsonArray());
+    } else {
+      // Construct a stream of comment texts from the queried entities.
+      Stream<String> commentTexts = results.stream().map((entity) -> {
+        String commentText = (String) entity.getProperty("commentText");
+        return commentText;
+      });
 
-    String languageCode = request.getParameter("language-code");
-    Stream<String> translatedCommentTexts = translateComments(commentTexts, languageCode);
+      String languageCode = request.getParameter("language-code");
+      Stream<String> translatedCommentTexts = translateComments(commentTexts, languageCode);
 
-    // Construct a list of comments from the queried entities and translated comment texts.
-    List<Comment> comments = 
-        Streams.zip(results.stream(), translatedCommentTexts, (entity, translatedCommentText) -> {
-          long id = entity.getKey().getId();
-          String author = (String) entity.getProperty("author");
-          long timestamp = (long) entity.getProperty("timestamp");
+      // Construct a list of comments from the queried entities and translated comment texts.
+      List<Comment> comments = 
+          Streams.zip(results.stream(), translatedCommentTexts, (entity, translatedCommentText) -> {
+            long id = entity.getKey().getId();
+            String author = (String) entity.getProperty("author");
+            long timestamp = (long) entity.getProperty("timestamp");
 
-          return new Comment(id, author, translatedCommentText, timestamp);
-        }).collect(Collectors.toList());
+            return new Comment(id, author, translatedCommentText, timestamp);
+          }).collect(Collectors.toList());
 
-    // Convert the list of comments to a JsonElement.
-    JsonElement commentsJsonElement = convertToJsonElement(comments);
-    json.add("comments", commentsJsonElement);
+      // Convert the list of comments to a JsonElement.
+      JsonElement commentsJsonElement = convertToJsonElement(comments);
+      json.add("comments", commentsJsonElement);
+    }
 
     // Send the JSON as the response.
     response.setContentType("application/json; charset=UTF-8");

@@ -45,8 +45,5 @@ public class DeleteDataServlet extends HttpServlet {
     // Delete all comment entities from Datastore.
     Iterable<Key> keysToDelete = Iterables.transform(results.asIterable(), Entity::getKey);
     datastore.delete(keysToDelete);
-
-    // Redirect back to the HTML page.
-    response.sendRedirect("/index.html");
   }
 }
