@@ -19,6 +19,7 @@ import com.google.sps.servlets.NameServlet;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonElement;
+import com.google.common.collect.Streams;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -28,10 +29,14 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.cloud.translate.Translate;
+import com.google.cloud.translate.TranslateOptions;
+import com.google.cloud.translate.Translation;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -79,29 +84,38 @@ public class DataServlet extends HttpServlet {
       json.addProperty("loginUrl", loginUrl);
     }
     
-    int maxComments = getMaxCommentsToReturn(request);
-
     // Query up to maxComments comment entities from Datastore with the user's specified sorting option.
+    int maxComments = getMaxCommentsToReturn(request);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Query query = createCommentQuery(request);
     List<Entity> results = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(maxComments));
 
-    // Construct a list of comments from the queried entities.
-    List<Comment> comments = results.stream().map((entity) -> {
-      long id = entity.getKey().getId();
-      String author = (String) entity.getProperty("author");
+    // Construct a stream of comment texts from the queried entities.
+    Stream<String> commentTexts = results.stream().map((entity) -> {
       String commentText = (String) entity.getProperty("commentText");
-      long timestamp = (long) entity.getProperty("timestamp");
+      return commentText;
+    });
 
-      return new Comment(id, author, commentText, timestamp);
-    }).collect(Collectors.toList());
+    String languageCode = request.getParameter("language-code");
+    Stream<String> translatedCommentTexts = translateComments(commentTexts, languageCode);
+
+    // Construct a list of comments from the queried entities and translated comment texts.
+    List<Comment> comments = 
+        Streams.zip(results.stream(), translatedCommentTexts, (entity, translatedCommentText) -> {
+          long id = entity.getKey().getId();
+          String author = (String) entity.getProperty("author");
+          long timestamp = (long) entity.getProperty("timestamp");
+
+          return new Comment(id, author, translatedCommentText, timestamp);
+        }).collect(Collectors.toList());
 
     // Convert the list of comments to a JsonElement.
     JsonElement commentsJsonElement = convertToJsonElement(comments);
     json.add("comments", commentsJsonElement);
 
     // Send the JSON as the response.
-    response.setContentType("application/json;");
+    response.setContentType("application/json; charset=UTF-8");
+    response.setCharacterEncoding("UTF-8");
     response.getWriter().println(json.toString());
   }
 
@@ -166,6 +180,23 @@ public class DataServlet extends HttpServlet {
     }
 
     return query;
+  }
+
+  /**
+   * Translates a stream of comment texts to the specified language code and returns a
+   * stream of the translated comment texts.
+   */
+  private Stream<String> translateComments(Stream<String> comments, String languageCode) {
+    // Convert the stream of comment texts into a list since the translation API takes in lists.
+    List<String> commentTexts = comments.collect(Collectors.toList());
+
+    // Translate the list of comment texts.
+    Translate translate = TranslateOptions.getDefaultInstance().getService();
+    List<Translation> translations =
+        translate.translate(commentTexts, Translate.TranslateOption.targetLanguage(languageCode));
+
+    // Map the translations to a stream of strings.
+    return translations.stream().map(Translation::getTranslatedText);
   }
 
   /**
