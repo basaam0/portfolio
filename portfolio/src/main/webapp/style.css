@@ -208,6 +208,12 @@ ul {
   border-radius: 30px;
   margin: 20px 0;
   padding: 4px 10px;
+  transition: all .3s ease-in-out;
+}
+
+#comments-container div:hover {
+  background: whitesmoke;
+  transform: scale(1.1);
 }
 
 .comment-date {
