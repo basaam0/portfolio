@@ -133,6 +133,9 @@ function updateColorTheme(backgroundTheme) {
  * and displays the list of comments. 
  */
 async function loadCommentsSection() {
+  // Set the cursor to the loading icon.
+  document.body.style.cursor = 'wait';
+
   const maxComments = document.getElementById('max-comments').value;
   const sortOption = document.getElementById('sort-option').value;
   const languageCode = document.getElementById('language').value;
@@ -145,8 +148,13 @@ async function loadCommentsSection() {
   const response = await fetch(`/data?${params.toString()}`);
   const json = await response.json();
 
-  getCommentsForm(json);
-  getComments(json.comments);
+  // Load the form to post comments and the list of comments.
+  await Promise.all([
+    getCommentsForm(json), 
+    getComments(json.comments),
+  ]);
+  // Restore the cursor after the comments sectuib has loaded.
+  document.body.style.cursor = 'default';
 }
 
 /**
@@ -251,6 +259,9 @@ async function updateUserName(event) {
   // Prevent the default action of reloading the page to prevent the background theme from resetting.
   event.preventDefault();
 
+  // Set the cursor to the loading icon.
+  document.body.style.cursor = 'wait';
+
   const userNameInput = document.getElementById('user-name-input');
   const response = await fetch(`/name?new-name=${userNameInput.value}`, {
     method: 'POST'
@@ -268,6 +279,9 @@ async function postComment(event) {
   // Prevent the default action of reloading the page to prevent the background theme from resetting.
   event.preventDefault();
 
+  // Set the cursor to the loading icon.
+  document.body.style.cursor = 'wait';
+
   const commentInput = document.getElementById('comment-input');
   const response = await fetch(`/data?comment=${commentInput.value}`, {
     method: 'POST'
@@ -282,6 +296,9 @@ async function postComment(event) {
  * Deletes all comments from the server and removes them from the page.
  */
 async function deleteAllComments() {
+  // Set the cursor to the loading icon.
+  document.body.style.cursor = 'wait';
+  
   const response = await fetch('/delete-data', {
     method: 'POST'
   });
