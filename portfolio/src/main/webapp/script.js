@@ -56,36 +56,42 @@ const backgroundThemes = [
     headingBgColor: 'rgba(160,82,45,.1)',
     highlightBgColor: 'rgba(34,139,34,.3)',
     buttonBgColor: 'rgba(160,82,45,.7)',
+    selectBgColor: 'rgba(160,82,45,.1)',
   }, {
     img: 'ocean.jpg',
     primaryColor: 'navy',
     headingBgColor: 'rgba(65,105,225,.1)',
     highlightBgColor: 'rgba(0,191,255,.2)',
     buttonBgColor: 'rgba(135,206,235,.9)',
+    selectBgColor: 'rgba(65,105,225,.1)',
   }, {
     img: 'mountain.jpg',
     primaryColor: 'midnightblue',
     headingBgColor: 'rgba(0,128,128,.15)',
     highlightBgColor: 'rgba(25,25,112,.2)',
-    buttonBgColor: 'rgba(175, 238, 238,.9)'
+    buttonBgColor: 'rgba(175, 238, 238,.9)',
+    selectBgColor: 'rgba(0,128,128,.15)',
   }, {
     img: 'balloons.jpg',
     primaryColor: 'indianred',
     headingBgColor: 'rgba(255,215,0,.2)',
     highlightBgColor: 'rgba(255,165,0,.5)',
     buttonBgColor: 'rgba(255,69,0,.7)',
+    selectBgColor: 'rgba(255,215,0,.2)',
   }, {
     img: 'iceberg.jpg',
     primaryColor: 'darkslategray',
     headingBgColor: 'rgba(72,61,139,.2)',
     highlightBgColor: 'rgba(0,50,128,.4)',
     buttonBgColor: 'rgba(90,150,150,.9)',
+    selectBgColor: 'rgba(72,61,139,.2)',
   }, {
     img: 'grass.jpg',
     primaryColor: 'green',
     headingBgColor: 'rgba(173,255,47,.2)',
     highlightBgColor: 'rgba(0,255,0,.4)',
     buttonBgColor: 'rgba(127,255,0,.9)',
+    selectBgColor: 'rgba(173,255,47,.2)',
   },
 ];
 
@@ -119,6 +125,7 @@ function updateColorTheme(backgroundTheme) {
   document.body.style.setProperty('--heading-bg-color', backgroundTheme.headingBgColor);
   document.body.style.setProperty('--highlight-bg-color', backgroundTheme.highlightBgColor);
   document.body.style.setProperty('--button-bg-color', backgroundTheme.buttonBgColor);
+  document.body.style.setProperty('--select-bg-color', backgroundTheme.selectBgColor);
 }
 
 /**

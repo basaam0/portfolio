@@ -4,9 +4,10 @@
   --button-bg-color: rgba(160,82,45,.7);
   --comment-bg-color: rgba(255,255,255,.6);
   --heading-bg-color: rgba(160,82,45,.1);
-  --highlight-bg-color: rgba(0,255,0,.3);
+  --highlight-bg-color: rgba(118, 180, 118, 0.3);
   --primary-theme-color: #523029;
   --section-bg-color: rgba(255,255,255,.3);
+  --select-bg-color: rgba(160,82,45,.1);
 }
 
 ::selection {
@@ -45,7 +46,9 @@ button,
 }
 
 button:hover,
-#login-logout-link:hover {
+#login-logout-link:hover,
+#max-comments:hover,
+.comment-option:hover {
   box-shadow: 0 0 10px teal;
 }
 
@@ -160,7 +163,9 @@ ul {
 }
 
 #user-name-input,
-#comment-input {
+#comment-input,
+#max-comments,
+.comment-option {
   border: solid 1px var(--primary-theme-color);
 }
 
@@ -177,8 +182,20 @@ ul {
   margin: 0 34px 0 10px;
 }
 
+#max-comments,
+.comment-option {
+  background: white;
+  border-radius: 8px;
+  height: 25px;
+  outline: none;
+}
+
 #max-comments {
   width: 40px;
+}
+
+.comment-option option {
+  background: var(--select-bg-color);
 }
 
 #comments-container {
