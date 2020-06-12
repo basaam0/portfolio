@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 import java.util.stream.Collectors;
+import java.util.Optional;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -63,13 +64,15 @@ public class DataServlet extends HttpServlet {
     UserService userService = UserServiceFactory.getUserService();
 
     if (userService.isUserLoggedIn()) {
-      String name = getUserName(userService.getCurrentUser().getUserId());
+      String userId = userService.getCurrentUser().getUserId();
 
-      // If the user has logged in for the first time, set their name as their Google account nickname.
-      if (name == null) {
-        name = userService.getCurrentUser().getNickname();
-        NameServlet.upsertUserInfo(name);
-      }
+      // Get the name of the logged-in user.
+      String name = getUserName(userId).orElseGet(() -> {
+        // If the user has logged in for the first time, set their name as their Google account nickname.
+        String defaultName = userService.getCurrentUser().getNickname();
+        NameServlet.upsertUserInfo(defaultName);
+        return defaultName;
+      });
 
       String urlToRedirectToAfterUserLogsOut = "/";
       String logoutUrl = userService.createLogoutURL(urlToRedirectToAfterUserLogsOut);
@@ -128,7 +131,7 @@ public class DataServlet extends HttpServlet {
   /** 
    * Returns the name of the user with id, or null if a name has not been set. 
    */
-  private String getUserName(String id) {
+  private Optional<String> getUserName(String id) {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Query query =
         new Query("UserInfo")
@@ -137,11 +140,11 @@ public class DataServlet extends HttpServlet {
     
     Entity entity = results.asSingleEntity();
     if (entity == null) {
-      return null;
+      return Optional.empty();
     }
 
     String name = (String) entity.getProperty("name");
-    return name;
+    return Optional.of(name);
   }
 
   /** 
@@ -222,14 +225,23 @@ public class DataServlet extends HttpServlet {
       response.sendRedirect("/index.html");
       return;
     }
+    
+    String userId = userService.getCurrentUser().getUserId();
+    Optional<String> author = getUserName(userId);
 
-    String author = getUserName(userService.getCurrentUser().getUserId());
+    if (!author.isPresent()) {
+      String email = userService.getCurrentUser().getEmail(); 
+      LOGGER.severe("User <" + email + "> does not have an associated name.");
+      response.sendRedirect("/index.html");
+      return;
+    }
+
     String commentText = request.getParameter("comment");
     long timestamp = System.currentTimeMillis();
     
     // Create an entity with a kind of Comment.
     Entity commentEntity = new Entity("Comment");
-    commentEntity.setProperty("author", author);
+    commentEntity.setProperty("author", author.get());
     commentEntity.setProperty("commentText", commentText);
     commentEntity.setProperty("timestamp", timestamp);
 
