@@ -46,10 +46,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /** 
- * Servlet with a GET handler that loads a list of comments from Datastore, checks
- * whether the user is logged in, and sends back either the user's email, name, and
- * a link to logout if they are logged in or a link to log in if they are not; and  
- * a POST handler that stores a new comment in Datastore.
+ * Servlet with a GET handler that loads information about the user and a list of
+ * comments from Datastore, and a POST handler that stores a new comment.
  */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
@@ -58,6 +56,11 @@ public class DataServlet extends HttpServlet {
   private static final Logger LOGGER = Logger.getLogger(DataServlet.class.getName());
   private static final int DEFAULT_MAX_COMMENTS = 10;
 
+  /**
+   * Loads the list of comments from Datastore and applies the requested limit, sort,
+   * and translation options. Sends either the logged-in user's email, name, and a
+   * logout link or a login link along with the translated comments as a response.
+   */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Construct JSON containing information about the user and the comments.
@@ -122,7 +125,7 @@ public class DataServlet extends HttpServlet {
       Stream<String> commentTexts = 
           entities.stream().map((entity) -> (String) entity.getProperty("commentText"));
 
-      // Translate the comments to the selected language.
+      // Translate the comments to the selected language, preserving order.
       String languageCode = request.getParameter("language-code");
       Stream<String> translatedCommentTexts = translateComments(commentTexts, languageCode);
 
@@ -202,7 +205,8 @@ public class DataServlet extends HttpServlet {
     // Convert the stream of comment texts into a list since the translation API takes in lists.
     List<String> commentTexts = comments.collect(Collectors.toList());
 
-    // Translate the list of comment texts.
+    // Translate the list of comment texts. 
+    // The translation API ensures the comments are in the same order after translating.
     Translate translate = TranslateOptions.getDefaultInstance().getService();
     List<Translation> translations = translate.translate(commentTexts, 
         Translate.TranslateOption.targetLanguage(languageCode), 
@@ -234,6 +238,9 @@ public class DataServlet extends HttpServlet {
     return jsonElement;
   }
 
+  /**
+   * Stores a new comment posted by a logged-in user in Datastore.
+   */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();

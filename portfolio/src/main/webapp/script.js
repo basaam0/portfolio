@@ -153,7 +153,7 @@ async function loadCommentsSection() {
     getCommentsForm(json), 
     getComments(json.comments),
   ]);
-  // Restore the cursor after the comments sectuib has loaded.
+  // Restore the cursor after the comments section has loaded.
   document.body.style.cursor = 'default';
 }
 
