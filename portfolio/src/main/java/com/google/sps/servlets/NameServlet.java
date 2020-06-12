@@ -54,7 +54,7 @@ public class NameServlet extends HttpServlet {
    * Checks if the name is composed of only letters, digits, underscores,
    * and spaces and is between three and twenty characters in length.
    */
-  private boolean isValidName(String name) {
+  private static boolean isValidName(String name) {
     return validName.matcher(name).matches();
   }
 

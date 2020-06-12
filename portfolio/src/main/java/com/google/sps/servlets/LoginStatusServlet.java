@@ -44,7 +44,7 @@ public class LoginStatusServlet extends HttpServlet {
   /**
    * Converts a boolean value into a JSON string using the Gson library.
    */
-  private String convertToJson(boolean value) {
+  private static String convertToJson(boolean value) {
     Gson gson = new Gson();
     String json = gson.toJson(value);
     return json;

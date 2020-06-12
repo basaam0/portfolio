@@ -48,7 +48,7 @@ import javax.servlet.http.HttpServletResponse;
 /** 
  * Servlet with a GET handler that loads a list of comments from Datastore, checks
  * whether the user is logged in, and sends back either the user's email, name, and
- * a link to logout if they are logged in or a link to login if they are not; and  
+ * a link to logout if they are logged in or a link to log in if they are not; and  
  * a POST handler that stores a new comment in Datastore.
  */
 @WebServlet("/data")
@@ -60,8 +60,24 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // Construct JSON containing information about the user and the comments.
+    JsonObject json = getLoginInformation();
+    json.add("comments", queryComments(request));
+
+    // Send the JSON as the response.
+    response.setContentType("application/json; charset=UTF-8");
+    response.setCharacterEncoding("UTF-8");
+    response.getWriter().println(json.toString());
+  }
+
+  /**
+   * Gets the user's name, email, and a link to logout if they are logged in
+   * or a link to log in otherwise.
+   */
+  private JsonObject getLoginInformation() {
     JsonObject json = new JsonObject();
     UserService userService = UserServiceFactory.getUserService();
+    String redirectUrl = "/";
 
     if (userService.isUserLoggedIn()) {
       String userId = userService.getCurrentUser().getUserId();
@@ -74,8 +90,7 @@ public class DataServlet extends HttpServlet {
         return defaultName;
       });
 
-      String urlToRedirectToAfterUserLogsOut = "/";
-      String logoutUrl = userService.createLogoutURL(urlToRedirectToAfterUserLogsOut);
+      String logoutUrl = userService.createLogoutURL(redirectUrl);
       String userEmail = userService.getCurrentUser().getEmail();
 
       json.addProperty("logoutUrl", logoutUrl);
@@ -83,49 +98,37 @@ public class DataServlet extends HttpServlet {
       json.addProperty("name", name);
     } else {
       // Add a login link to the response if the user is not logged in.
-      String urlToRedirectToAfterUserLogsIn = "/";
-      String loginUrl = userService.createLoginURL(urlToRedirectToAfterUserLogsIn);
-      json.addProperty("loginUrl", loginUrl);
+      json.addProperty("loginUrl", userService.createLoginURL(redirectUrl));
     }
-    
+
+    return json;
+  }
+
+  /**
+   * Gets a list of all the comments in JSON format translated to the selected language.
+   */
+  private JsonElement queryComments(HttpServletRequest request) {
     // Query up to maxComments comment entities from Datastore with the user's specified sorting option.
     int maxComments = getMaxCommentsToReturn(request);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Query query = createCommentQuery(request);
-    List<Entity> results = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(maxComments));
+    List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(maxComments));
 
     // Check if there are comments to translate.
-    if (results.isEmpty()) {
-      json.add("comments", new JsonArray());
+    if (entities.isEmpty()) {
+      return new JsonArray();
     } else {
       // Construct a stream of comment texts from the queried entities.
-      Stream<String> commentTexts = results.stream().map((entity) -> {
-        String commentText = (String) entity.getProperty("commentText");
-        return commentText;
-      });
+      Stream<String> commentTexts = 
+          entities.stream().map((entity) -> (String) entity.getProperty("commentText"));
 
+      // Translate the comments to the selected language.
       String languageCode = request.getParameter("language-code");
       Stream<String> translatedCommentTexts = translateComments(commentTexts, languageCode);
 
-      // Construct a list of comments from the queried entities and translated comment texts.
-      List<Comment> comments = 
-          Streams.zip(results.stream(), translatedCommentTexts, (entity, translatedCommentText) -> {
-            long id = entity.getKey().getId();
-            String author = (String) entity.getProperty("author");
-            long timestamp = (long) entity.getProperty("timestamp");
-
-            return new Comment(id, author, translatedCommentText, timestamp);
-          }).collect(Collectors.toList());
-
-      // Convert the list of comments to a JsonElement.
-      JsonElement commentsJsonElement = convertToJsonElement(comments);
-      json.add("comments", commentsJsonElement);
+      List<Comment> comments = createComments(entities.stream(), translatedCommentTexts);     
+      return convertToJsonElement(comments);
     }
-
-    // Send the JSON as the response.
-    response.setContentType("application/json; charset=UTF-8");
-    response.setCharacterEncoding("UTF-8");
-    response.getWriter().println(json.toString());
   }
 
   /** 
@@ -210,9 +213,22 @@ public class DataServlet extends HttpServlet {
   }
 
   /**
+   * Construct a list of comments from the queried entities and translated comment texts.
+   */
+  private List<Comment> createComments(Stream<Entity> entities, Stream<String> translations) {
+    return Streams.zip(entities, translations, (entity, translation) -> {
+      long id = entity.getKey().getId();
+      String author = (String) entity.getProperty("author");
+      long timestamp = (long) entity.getProperty("timestamp");
+
+      return new Comment(id, author, translation, timestamp);
+    }).collect(Collectors.toList());
+  }
+
+  /**
    * Converts a List into a JsonElement using the Gson library.
    */
-  private JsonElement convertToJsonElement(List list) {
+  private static JsonElement convertToJsonElement(List list) {
     Gson gson = new Gson();
     JsonElement jsonElement = gson.toJsonTree(list);
     return jsonElement;
