@@ -52,7 +52,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
   // Logs to System.err by default.
-  private static final Logger LOGGER = Logger.getLogger(DataServlet.class.getName());
+  private static final Logger logger = Logger.getLogger(DataServlet.class.getName());
   private static final int DEFAULT_MAX_COMMENTS = 10;
 
   /**
@@ -70,6 +70,41 @@ public class DataServlet extends HttpServlet {
     response.setContentType("application/json; charset=UTF-8");
     response.setCharacterEncoding("UTF-8");
     response.getWriter().println(json.toString());
+  }
+
+  /**
+   * Stores a new comment posted by a logged-in user in Datastore.
+   */
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    UserService userService = UserServiceFactory.getUserService();
+    if (!userService.isUserLoggedIn()) {
+      response.sendRedirect("/index.html");
+      return;
+    }
+
+    String userId = userService.getCurrentUser().getUserId();
+    Optional<String> author = getUserName(userId);
+
+    if (!author.isPresent()) {
+      String email = userService.getCurrentUser().getEmail();
+      logger.severe("User <" + email + "> does not have an associated name.");
+      response.sendRedirect("/index.html");
+      return;
+    }
+
+    String commentText = request.getParameter("comment");
+    long timestamp = System.currentTimeMillis();
+
+    // Create an entity with a kind of Comment.
+    Entity commentEntity = new Entity("Comment");
+    commentEntity.setProperty("author", author.get());
+    commentEntity.setProperty("commentText", commentText);
+    commentEntity.setProperty("timestamp", timestamp);
+
+    // Store the comment entity in Datastore.
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    datastore.put(commentEntity);
   }
 
   /**
@@ -162,13 +197,13 @@ public class DataServlet extends HttpServlet {
     try {
       maxComments = Integer.parseInt(maxCommentsString);
     } catch (NumberFormatException e) {
-      LOGGER.warning("Could not convert to int: " + maxCommentsString);
+      logger.warning("Could not convert to int: " + maxCommentsString);
       return DEFAULT_MAX_COMMENTS;
     }
 
     // Check that the input is positive.
     if (maxComments < 1) {
-      LOGGER.warning("Choice for maximum number of comments is out of range: " + maxCommentsString);
+      logger.warning("Choice for maximum number of comments is out of range: " + maxCommentsString);
       return DEFAULT_MAX_COMMENTS;
     }
 
@@ -236,40 +271,5 @@ public class DataServlet extends HttpServlet {
     Gson gson = new Gson();
     JsonElement jsonElement = gson.toJsonTree(list);
     return jsonElement;
-  }
-
-  /**
-   * Stores a new comment posted by a logged-in user in Datastore.
-   */
-  @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    UserService userService = UserServiceFactory.getUserService();
-    if (!userService.isUserLoggedIn()) {
-      response.sendRedirect("/index.html");
-      return;
-    }
-
-    String userId = userService.getCurrentUser().getUserId();
-    Optional<String> author = getUserName(userId);
-
-    if (!author.isPresent()) {
-      String email = userService.getCurrentUser().getEmail();
-      LOGGER.severe("User <" + email + "> does not have an associated name.");
-      response.sendRedirect("/index.html");
-      return;
-    }
-
-    String commentText = request.getParameter("comment");
-    long timestamp = System.currentTimeMillis();
-
-    // Create an entity with a kind of Comment.
-    Entity commentEntity = new Entity("Comment");
-    commentEntity.setProperty("author", author.get());
-    commentEntity.setProperty("commentText", commentText);
-    commentEntity.setProperty("timestamp", timestamp);
-
-    // Store the comment entity in Datastore.
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(commentEntity);
   }
 }
