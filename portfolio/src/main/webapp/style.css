@@ -141,6 +141,10 @@ ul {
   color: #0072b1;
 }
 
+.profile-text {
+  display: none;
+}
+
 /* Comments Section */
 
 #login-container {

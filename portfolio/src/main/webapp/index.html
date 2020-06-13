@@ -1,170 +1,184 @@
 <!DOCTYPE html>
-<meta charset="UTF-8">
+<meta charset="UTF-8" />
 <title>Basaam's Portfolio</title>
 
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet">
-<link rel="icon" href="favicon.ico">
+<link rel="stylesheet" href="style.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
+<link rel="icon" href="favicon.ico" />
 
 <script src="script.js"></script>
 
 <body onload="loadCommentsSection()">
-<button id="prev-button" type="button" onclick="prevBackground()">&lt;</button>
-<button id="next-button" type="button" onclick="nextBackground()">&gt;</button>
+  <button id="prev-button" type="button" onclick="prevBackground()">&lt;</button>
+  <button id="next-button" type="button" onclick="nextBackground()">&gt;</button>
 
-<div id="content">
-  <div id="profiles">
-    <a class="fa fa-github" target="_blank" href="https://github.com/basaam0"></a>
-    <a class="fa fa-linkedin" target="_blank" href="https://www.linkedin.com/in/basaam"></a>
-  </div>
-
-  <h1>Basaam's Portfolio</h1>
-  <p>Hello, I'm Basaam. Currently, I am a rising sophomore at the University of Maryland
-      studying Computer Science and Applied Mathematics. I am a member of the Advanced
-      Cybersecurity Experience for Students (ACES) Honors College, which is a two-year 
-      living-learning program that provides a multidisciplinary education in 
-      cybersecurity. In addition to the honors college, I am pursuing the ACES Minor
-      as well as a business minor in Innovation and Entrepreneurship.
-
-  <h2>Education</h2>
-  <div class="portfolio-section">
-    <h3>University of Maryland, College Park</h3>
-    <p>2019 - Present (Expected 2023)
-    <ul>
-      <li>Majors: Computer Science, Applied Mathematics
-      <li>Minors: Advanced Cybersecurity Experience for Students (ACES), Innovation and Entrepreneurship (Business)
-      <li>ACES Honors Living-Learning Program
-      <li>Banneker/Key Full-Ride Merit Scholarship
-      <li>Computer Science Departmental Honors
-    </ul>
-    <h3>Thomas S. Wootton High School</h3>
-    <p>2015 - 2019
-    <ul>
-      <li>Academy of Information Technology (AOIT) Signature Program
-      <li>Science, Technology, and Research Scholars (STARS) Program
-    </ul>
-  </div>
-
-  <h2>Experience</h2>
-  <div class="portfolio-section">
-    <h3>Google - Student Training in Engineering Program (STEP) Intern</h3>
-    <p>May 2020 - Present
-    <br><br>
-    <h3>Capital One - Software Engineering Summit Participant</h3>
-    <p>Jan 2020
-    <br><br>
-    <h3>Pathover, Inc - Back-End Web Developer Intern</h3>
-    <p>Jun 2018 - Aug 2019
-  </div>
-
-  <h2>Skills</h2>
-  <div class="portfolio-section">
-    <ul>
-      <li>Languages: Java, JavaScript, C, OCaml, Ruby, HTML/CSS
-      <li>Technologies: Bash Scripting, Node.js, Express.js, Sequelize, PostgreSQL, Mocha, Chai
-      <li>Tools: Android Studio, Git, GDB, Unix Command Line, Kali Linux, Wireshark, Ghidra, Arduino
-    </ul>
-  </div>
-
-  <h2>Courses</h2>
-  <div class="portfolio-section">
-    <h4>Enrolled:</h4>
-    <ul>
-      <li>Design and Analysis of Computer Algorithms
-      <li>Computer and Network Security
-      <li>Applied Cybersecurity Foundations II
-      <li>Advanced Calculus I
-      <li>Introduction to Probability Theory
-    </ul>
-    <h4>Completed:</h4>
-    <ul>
-      <li>Algorithms
-      <li>Organization of Programming Languages
-      <li>Introduction to Computer Systems
-      <li>Discrete Structures
-      <li>Honors Multivariable Calculus, Linear Algebra, and Differential Equations I & II
-      <li>Introduction to Reverse Engineering
-      <li>Accounting and Economic Impacts of Cybersecurity
-      <li>Applied Cybersecurity Foundations I
-      <li>Foundations of Cybersecurity
-    </ul>
-  </div>
-
-  <h2>Activities</h2>
-  <div class="portfolio-section">
-    <ul>
-      <li>Cybersecurity Club
-      <li>ACES Competition Team
-      <li>Data and Cloud Computing Society
-      <li>Maryland Science Olympiad Club
-    </ul>
-  </div>
-
-  <h2>Facts</h2>
-  <div class="portfolio-section" id="facts">
-    <p>Click here to get a random fact about me:
-    <br><br>
-    <button onclick="addRandomFact()">Click Here</button>
-    <div id="fact-container"></div>
-  </div>
-
-  <h2>Comments</h2>
-  <div id="comments-form-container">
-    <h3>Post a comment:</h3>
-    <br>
-    <div id="login-container">
-      <div id="login-message-container"></div>
-      <br>
-      <a id="login-logout-link">Login</a>
+  <div id="content">
+    <div id="profiles">
+      <a class="fa fa-github" target="_blank" href="https://github.com/basaam0">
+        <span class="profile-text">GitHub</span>
+      </a>
+      <a class="fa fa-linkedin" target="_blank" href="https://www.linkedin.com/in/basaam">
+        <span class="profile-text">LinkedIn</span>
+      </a>
     </div>
-    <br>
-    <form id="update-name" action="#" onsubmit="updateUserName(event)">
 
-      <label class="comments-label" for="user-name">Display Name:</label>
-      <input id="user-name-input" type="text" name="user-name" placeholder="Your Name" 
-          pattern="[\w ]{3,20}" title="Composed of only letters, digits, underscores,
-          and spaces with between three and twenty characters" required>
-      <br><br>
+    <h1>Basaam's Portfolio</h1>
+    <p>
+      Hello, I'm Basaam. Currently, I am a rising sophomore at the University of Maryland studying Computer Science and
+      Applied Mathematics. I am a member of the Advanced Cybersecurity Experience for Students (ACES) Honors College,
+      which is a two-year living-learning program that provides a multidisciplinary education in cybersecurity. In
+      addition to the honors college, I am pursuing the ACES Minor as well as a business minor in Innovation and
+      Entrepreneurship.
 
-      <button id="submit-name" type="submit">Update Name</button>
-    </form>
-    <br>
-    <form id="post-comment" action="#" onsubmit="postComment(event)">
-      
-      <label id="comment-text-label" class="comments-label" for="comment">Comment:</label>
-      <textarea id="comment-input" name="comment" placeholder="Comment" required></textarea>
-      <br><br>
+    <h2>Education</h2>
+    <div class="portfolio-section">
+      <h3>University of Maryland, College Park</h3>
+      <p>2019 - Present (Expected 2023)
+      <ul>
+        <li>Majors: Computer Science, Applied Mathematics
+        <li>
+          Minors: Advanced Cybersecurity Experience for Students (ACES), Innovation and Entrepreneurship (Business)
+        <li>ACES Honors Living-Learning Program
+        <li>Banneker/Key Full-Ride Merit Scholarship
+        <li>Computer Science Departmental Honors
+      </ul>
 
-      <button id="submit-comment" type="submit">Post Comment</button>
-    </form>
-    <br>
+      <h3>Thomas S. Wootton High School</h3>
+      <p>2015 - 2019
+      <ul>
+        <li>Academy of Information Technology (AOIT) Signature Program
+        <li>Science, Technology, and Research Scholars (STARS) Program
+      </ul>
+    </div>
+
+    <h2>Experience</h2>
+    <div class="portfolio-section">
+      <h3>Google - Student Training in Engineering Program (STEP) Intern</h3>
+      <p>May 2020 - Present <br><br>
+
+      <h3>Capital One - Software Engineering Summit Participant</h3>
+      <p>Jan 2020 <br><br>
+
+      <h3>Pathover, Inc - Back-End Web Developer Intern</h3>
+      <p>Jun 2018 - Aug 2019
+    </div>
+
+    <h2>Skills</h2>
+    <div class="portfolio-section">
+      <ul>
+        <li>Languages: Java, JavaScript, C, OCaml, Ruby, HTML/CSS
+        <li>Technologies: Bash Scripting, Node.js, Express.js, Sequelize, PostgreSQL, Mocha, Chai
+        <li>Tools: Android Studio, Git, GDB, Unix Command Line, Kali Linux, Wireshark, Ghidra, Arduino
+      </ul>
+    </div>
+
+    <h2>Courses</h2>
+    <div class="portfolio-section">
+      <h4>Enrolled:</h4>
+      <ul>
+        <li>Design and Analysis of Computer Algorithms
+        <li>Computer and Network Security
+        <li>Applied Cybersecurity Foundations II
+        <li>Advanced Calculus I
+        <li>Introduction to Probability Theory
+      </ul>
+
+      <h4>Completed:</h4>
+      <ul>
+        <li>Algorithms
+        <li>Organization of Programming Languages
+        <li>Introduction to Computer Systems
+        <li>Discrete Structures
+        <li>Honors Multivariable Calculus, Linear Algebra, and Differential Equations I + II
+        <li>Introduction to Reverse Engineering
+        <li>Accounting and Economic Impacts of Cybersecurity
+        <li>Applied Cybersecurity Foundations I
+        <li>Foundations of Cybersecurity
+      </ul>
+    </div>
+
+    <h2>Activities</h2>
+    <div class="portfolio-section">
+      <ul>
+        <li>Cybersecurity Club
+        <li>ACES Competition Team
+        <li>Data and Cloud Computing Society
+        <li>Maryland Science Olympiad Club
+      </ul>
+    </div>
+
+    <h2>Facts</h2>
+    <div class="portfolio-section" id="facts">
+      <p>
+        Click here to get a random fact about me: <br><br>
+        <button onclick="addRandomFact()" type="button">Click Here</button>
+
+      <div id="fact-container"></div>
+    </div>
+
+    <h2>Comments</h2>
+    <div id="comments-form-container">
+      <h3>Post a comment:</h3>
+      <br>
+      <div id="login-container">
+        <div id="login-message-container"></div>
+        <br>
+        <a id="login-logout-link">Login</a>
+      </div>
+      <br>
+      <form id="update-name" action="#" onsubmit="updateUserName(event)">
+        <label class="comments-label" for="user-name">Display Name:</label>
+        <input
+          id="user-name-input"
+          type="text"
+          name="user-name"
+          placeholder="Your Name"
+          pattern="[\w ]{3,20}"
+          title="Composed of only letters, digits, underscores,
+          and spaces with between three and twenty characters"
+          required
+        >
+        <br><br>
+
+        <button id="submit-name" type="submit">Update Name</button>
+      </form>
+      <br>
+      <form id="post-comment" action="#" onsubmit="postComment(event)">
+        <label id="comment-text-label" class="comments-label" for="comment">Comment:</label>
+        <textarea id="comment-input" name="comment" placeholder="Comment" required></textarea>
+        <br><br>
+
+        <button id="submit-comment" type="submit">Post Comment</button>
+      </form>
+      <br>
+    </div>
+
+    <label class="comments-label" for="max-comments">Maximum Number of Comments:</label>
+    <input id="max-comments" type="number" name="max-comments" min="1" value="5" onchange="loadCommentsSection()">
+
+    <label class="comments-label" for="sort-option">Sort By:</label>
+    <select id="sort-option" class="comment-option" name="sort-option" onchange="loadCommentsSection()">
+      <option value="newest">Newest First
+      <option value="oldest">Oldest First
+      <option value="name">Alphabetically by Author
+    </select>
+
+    <label class="comments-label" for="language">Language:</label>
+    <select id="language" class="comment-option" name="language" onchange="loadCommentsSection()">
+      <option value="en">English
+      <option value="zh">Chinese (中文)
+      <option value="es">Spanish (español)
+      <option value="hi">Hindi (हिन्दी)
+      <option value="ar">Arabic (العربية)
+      <option value="fr">French (français)
+      <option value="ko">Korean (한국어)
+      <option value="sw">Swahili (Kiswahili)
+      <option value="de">German (Deutsche)
+      <option value="ru">Russian (русский)
+    </select>
+
+    <div id="comments-container"></div>
+    <button id="delete-comments" type="button" onclick="deleteAllComments()">⚠️ Delete All Comments ⚠️</button>
   </div>
-  
-  <label class="comments-label" for="max-comments">Maximum Number of Comments:</label>
-  <input id="max-comments" type="number" name="max-comments" min="1" value="5" onchange="loadCommentsSection()">
-
-  <label class="comments-label" for="sort-option">Sort By:</label>
-  <select id="sort-option" class="comment-option" name="sort-option" onchange="loadCommentsSection()">
-    <option value="newest">Newest First</option>
-    <option value="oldest">Oldest First</option>
-    <option value="name">Alphabetically by Author</option>
-  </select>
-
-  <label class="comments-label" for="language">Language:</label>
-  <select id="language" class="comment-option" name="language" onchange="loadCommentsSection()">
-    <option value="en">English</option>
-    <option value="zh">Chinese (中文)</option>
-    <option value="es">Spanish (español)</option>
-    <option value="hi">Hindi (हिन्दी)</option>
-    <option value="ar">Arabic (العربية)</option>
-    <option value="fr">French (français)</option>
-    <option value="ko">Korean (한국어)</option>
-    <option value="sw">Swahili (Kiswahili)</option>
-    <option value="de">German (Deutsche)</option>
-    <option value="ru">Russian (русский)</option>
-  </select>
-
-  <div id="comments-container"></div>
-  <button id="delete-comments" onclick="deleteAllComments()">⚠️ Delete All Comments ⚠️</button>
-</div>
+</body>
