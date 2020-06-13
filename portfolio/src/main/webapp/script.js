@@ -57,35 +57,40 @@ const backgroundThemes = [
     highlightBgColor: 'rgba(34,139,34,.3)',
     buttonBgColor: 'rgba(160,82,45,.7)',
     selectBgColor: 'rgba(160,82,45,.1)',
-  }, {
+  },
+  {
     img: 'ocean.jpg',
     primaryColor: 'navy',
     headingBgColor: 'rgba(65,105,225,.1)',
     highlightBgColor: 'rgba(0,191,255,.2)',
     buttonBgColor: 'rgba(135,206,235,.9)',
     selectBgColor: 'rgba(65,105,225,.1)',
-  }, {
+  },
+  {
     img: 'mountain.jpg',
     primaryColor: 'midnightblue',
     headingBgColor: 'rgba(0,128,128,.15)',
     highlightBgColor: 'rgba(25,25,112,.2)',
     buttonBgColor: 'rgba(175, 238, 238,.9)',
     selectBgColor: 'rgba(0,128,128,.15)',
-  }, {
+  },
+  {
     img: 'balloons.jpg',
     primaryColor: 'indianred',
     headingBgColor: 'rgba(255,215,0,.2)',
     highlightBgColor: 'rgba(255,165,0,.5)',
     buttonBgColor: 'rgba(255,69,0,.7)',
     selectBgColor: 'rgba(255,215,0,.2)',
-  }, {
+  },
+  {
     img: 'iceberg.jpg',
     primaryColor: 'darkslategray',
     headingBgColor: 'rgba(72,61,139,.2)',
     highlightBgColor: 'rgba(0,50,128,.4)',
     buttonBgColor: 'rgba(90,150,150,.9)',
     selectBgColor: 'rgba(72,61,139,.2)',
-  }, {
+  },
+  {
     img: 'grass.jpg',
     primaryColor: 'green',
     headingBgColor: 'rgba(173,255,47,.2)',
@@ -100,7 +105,8 @@ const backgroundThemes = [
  */
 function changeBackground(offset) {
   // Update the index of the current background image.
-  currentBackgroundIndex = (currentBackgroundIndex + offset) % backgroundThemes.length;
+  currentBackgroundIndex =
+      (currentBackgroundIndex + offset) % backgroundThemes.length;
 
   // Wrap around to the last image if the index is negative.
   if (currentBackgroundIndex < 0) {
@@ -121,16 +127,21 @@ function changeBackground(offset) {
  * Updates the CSS properties for the color theme.
  */
 function updateColorTheme(backgroundTheme) {
-  document.body.style.setProperty('--primary-theme-color', backgroundTheme.primaryColor);
-  document.body.style.setProperty('--heading-bg-color', backgroundTheme.headingBgColor);
-  document.body.style.setProperty('--highlight-bg-color', backgroundTheme.highlightBgColor);
-  document.body.style.setProperty('--button-bg-color', backgroundTheme.buttonBgColor);
-  document.body.style.setProperty('--select-bg-color', backgroundTheme.selectBgColor);
+  document.body.style.setProperty(
+      '--primary-theme-color', backgroundTheme.primaryColor);
+  document.body.style.setProperty(
+      '--heading-bg-color', backgroundTheme.headingBgColor);
+  document.body.style.setProperty(
+      '--highlight-bg-color', backgroundTheme.highlightBgColor);
+  document.body.style.setProperty(
+      '--button-bg-color', backgroundTheme.buttonBgColor);
+  document.body.style.setProperty(
+      '--select-bg-color', backgroundTheme.selectBgColor);
 }
 
 /**
- * Displays either the form to post a comment if the user is logged in or a link to login if they are not
- * and displays the list of comments. 
+ * Displays either the form to post a comment if the user is logged in or a link
+ * to login if they are not and displays the list of comments.
  */
 async function loadCommentsSection() {
   // Set the cursor to the loading icon.
@@ -150,7 +161,7 @@ async function loadCommentsSection() {
 
   // Load the form to post comments and the list of comments.
   await Promise.all([
-    getCommentsForm(json), 
+    getCommentsForm(json),
     getComments(json.comments),
   ]);
   // Restore the cursor after the comments section has loaded.
@@ -158,18 +169,21 @@ async function loadCommentsSection() {
 }
 
 /**
- * Fetches the login status from the server and either unhides the form to post a comment if the user is 
- * logged in or adds a login link to the DOM if the user is not logged in. 
+ * Fetches the login status from the server and either unhides the form to post
+ * a comment if the user is logged in or adds a login link to the DOM if the
+ * user is not logged in.
  */
 async function getCommentsForm(json) {
   const response = await fetch('/login-status');
   const isLoggedIn = await response.json();
 
-  const loginMessageContainer = document.getElementById('login-message-container');
+  const loginMessageContainer =
+      document.getElementById('login-message-container');
   const loginLogoutLinkElement = document.getElementById('login-logout-link');
 
   if (isLoggedIn) {
-    // Unhide the forms to update the display name and post comments, which are hidden by default.
+    // Unhide the forms to update the display name and post comments, which are
+    // hidden by default.
     const updateNameForm = document.getElementById('update-name');
     const commentsForm = document.getElementById('post-comment');
     updateNameForm.style.display = commentsForm.style.display = 'block';
@@ -181,7 +195,8 @@ async function getCommentsForm(json) {
     // Display the user's name.
     let html = `<p>You are currently logged in as ${json.name}`;
 
-    // Avoid displaying the email twice if it is the same as the name (which is the default).
+    // Avoid displaying the email twice if it is the same as the name (which is
+    // the default).
     if (json.name !== json.email) {
       html += ` (${json.email})`;
     }
@@ -210,7 +225,8 @@ async function getComments(comments) {
   // Add a message if there are no comments.
   if (comments.length === 0) {
     const commentElement = document.createElement('div');
-    const pElement = createTextElement(commentElement, 'p', 'No comments here...');
+    const pElement =
+        createTextElement(commentElement, 'p', 'No comments here...');
     pElement.id = 'empty-comment';
     commentsContainer.appendChild(commentElement);
   } else {
@@ -218,7 +234,7 @@ async function getComments(comments) {
     comments.forEach((comment) => {
       const commentElement = document.createElement('div');
 
-      // Put the date in the format "Tuesday, June 9, 2020, 5:35 PM". 
+      // Put the date in the format "Tuesday, June 9, 2020, 5:35 PM".
       const dateFormatOptions = {
         weekday: 'long',
         year: 'numeric',
@@ -228,8 +244,9 @@ async function getComments(comments) {
         minute: 'numeric',
         hour12: true,
       };
-      const formattedDate = new Date(comment.timestamp).toLocaleString('en-US', dateFormatOptions);
-      
+      const formattedDate = new Date(comment.timestamp)
+                                .toLocaleString('en-US', dateFormatOptions);
+
       const pElement = createTextElement(commentElement, 'p', formattedDate);
       pElement.classList.add('comment-date');
       createTextElement(commentElement, 'h4', comment.author);
@@ -252,20 +269,19 @@ function createTextElement(parentElement, htmlTag, innerText) {
 }
 
 /**
- * Updates the name associated with the logged-in user and reloads the comments section 
- * to display the updated greeting.
+ * Updates the name associated with the logged-in user and reloads the comments
+ * section to display the updated greeting.
  */
 async function updateUserName(event) {
-  // Prevent the default action of reloading the page to prevent the background theme from resetting.
+  // Prevent the default action of reloading the page to prevent the background
+  // theme from resetting.
   event.preventDefault();
 
   // Set the cursor to the loading icon.
   document.body.style.cursor = 'wait';
 
   const userNameInput = document.getElementById('user-name-input');
-  const response = await fetch(`/name?new-name=${userNameInput.value}`, {
-    method: 'POST'
-  });
+  await fetch(`/name?new-name=${userNameInput.value}`, {method: 'POST'});
 
   // Clear out the form input.
   userNameInput.value = '';
@@ -276,16 +292,17 @@ async function updateUserName(event) {
  * Posts a new comment to the server and updates the list of comments.
  */
 async function postComment(event) {
-  // Prevent the default action of reloading the page to prevent the background theme from resetting.
+  // Prevent the default action of reloading the page to prevent the background
+  // theme from resetting.
   event.preventDefault();
 
   // Set the cursor to the loading icon.
   document.body.style.cursor = 'wait';
 
   const commentInput = document.getElementById('comment-input');
-  const response = await fetch(`/data?comment=${encodeURIComponent(commentInput.value)}`, {
-    method: 'POST'
-  });
+  await fetch(
+      `/data?comment=${encodeURIComponent(commentInput.value)}`,
+      {method: 'POST'});
 
   // Clear out the form input.
   commentInput.value = '';
@@ -298,10 +315,7 @@ async function postComment(event) {
 async function deleteAllComments() {
   // Set the cursor to the loading icon.
   document.body.style.cursor = 'wait';
-  
-  const response = await fetch('/delete-data', {
-    method: 'POST'
-  });
-  
+
+  await fetch('/delete-data', {method: 'POST'});
   loadCommentsSection();
 }
