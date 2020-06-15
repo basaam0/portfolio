@@ -123,7 +123,7 @@ public class DataServlet extends HttpServlet {
     } else {
       // Construct a stream of comment texts from the queried entities.
       Stream<String> commentTexts = 
-          entities.stream().map((entity) -> (String) entity.getProperty("commentText"));
+          entities.stream().map(entity -> (String) entity.getProperty("commentText"));
 
       // Translate the comments to the selected language, preserving order.
       String languageCode = request.getParameter("language-code");
@@ -145,12 +145,7 @@ public class DataServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);
     
     Entity entity = results.asSingleEntity();
-    if (entity == null) {
-      return Optional.empty();
-    }
-
-    String name = (String) entity.getProperty("name");
-    return Optional.of(name);
+    return Optional.ofNullable(entity).map(nameEntity -> (String) nameEntity.getProperty("name"));
   }
 
   /** 
