@@ -159,7 +159,7 @@ public class DataServlet extends HttpServlet {
       return new JsonArray();
     } else {
       // Construct a stream of comment texts from the queried entities.
-      Stream<String> commentTexts = 
+      Stream<String> commentTexts =
           entities.stream().map(entity -> (String) entity.getProperty("commentText"));
 
       // Translate the comments to the selected language, preserving order.
