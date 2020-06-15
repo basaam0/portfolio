@@ -1,13 +1,13 @@
 /* Custom properties representing colors for the background theme */
 
 :root {
-  --button-bg-color: rgba(160,82,45,.7);
-  --comment-bg-color: rgba(255,255,255,.6);
-  --heading-bg-color: rgba(160,82,45,.1);
-  --highlight-bg-color: rgba(118, 180, 118, 0.3);
+  --button-bg-color: rgba(160, 82, 45, .7);
+  --comment-bg-color: rgba(255, 255, 255, .6);
+  --heading-bg-color: rgba(160, 82, 45, .1);
+  --highlight-bg-color: rgba(118, 180, 118, .3);
   --primary-theme-color: #523029;
-  --section-bg-color: rgba(255,255,255,.3);
-  --select-bg-color: rgba(160,82,45,.1);
+  --section-bg-color: rgba(255, 255, 255, .3);
+  --select-bg-color: rgba(160, 82, 45, .1);
 }
 
 ::selection {
@@ -69,7 +69,7 @@ button:hover,
 
 #content {
   animation: fade-in ease 5s;
-  background: rgba(255,255,255,.45);
+  background: rgba(255, 255, 255, .45);
   margin: 0 auto;
   padding: 0 0 30px;
   width: 40%;
@@ -81,7 +81,7 @@ button:hover,
 
 #facts {
   padding: 5px 5px 10px 5px;
-  text-align: center; 
+  text-align: center;
 }
 
 #fact-container {
@@ -89,7 +89,7 @@ button:hover,
 }
 
 h1 {
-  background:whitesmoke;
+  background: whitesmoke;
   width: 100%;
 }
 
@@ -99,8 +99,8 @@ h2 {
   padding: 0 5px;
 }
 
-h3, 
-h4, 
+h3,
+h4,
 p {
   margin: 0;
   padding: 0 5px;
@@ -112,14 +112,14 @@ ul {
 
 /* Animation */
 
-@keyframes fade-in { 
-  0% { 
-    opacity: 0; 
-  } 
-  100% { 
-    opacity: 1; 
-  } 
-} 
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
 
 /* GitHub and LinkedIn Icons */
 
@@ -131,20 +131,24 @@ ul {
   text-decoration: none;
 }
 
-.fa-github, 
+.fa-github,
 .fa-github:visited {
   color: black;
 }
 
-.fa-linkedin, 
+.fa-linkedin,
 .fa-linkedin:visited {
   color: #0072b1;
+}
+
+.profile-text {
+  display: none;
 }
 
 /* Comments Section */
 
 #login-container {
-  background: rgba(255,255,255,.4);
+  background: rgba(255, 255, 255, .4);
   padding: 5px 5px 10px 5px;
   text-align: center;
 }
@@ -157,7 +161,7 @@ ul {
 
 #update-name,
 #post-comment {
-  background: rgba(255,255,255,.4);
+  background: rgba(255, 255, 255, .4);
   display: none;
   padding: 5px 5px 10px 5px;
 }

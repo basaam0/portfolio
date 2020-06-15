@@ -14,28 +14,27 @@
 
 package com.google.sps.servlets;
 
-import com.google.gson.Gson;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.gson.Gson;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** 
+/**
  * Servlet with a GET handler that returns the login status of the user.
  */
 @WebServlet("/login-status")
 public class LoginStatusServlet extends HttpServlet {
-
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
-    
+
     // Convert the login status to JSON.
     String json = convertToJson(userService.isUserLoggedIn());
-    
+
     // Send the JSON as the response.
     response.setContentType("application/json;");
     response.getWriter().println(json);

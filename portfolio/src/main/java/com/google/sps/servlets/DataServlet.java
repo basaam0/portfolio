@@ -14,46 +14,45 @@
 
 package com.google.sps.servlets;
 
-import com.google.sps.data.Comment;
-import com.google.sps.servlets.NameServlet;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonArray;
-import com.google.common.collect.Streams;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
-import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.cloud.translate.Translate;
 import com.google.cloud.translate.TranslateOptions;
 import com.google.cloud.translate.Translation;
+import com.google.common.collect.Streams;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.sps.data.Comment;
+import com.google.sps.servlets.NameServlet;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
-import java.util.stream.Stream;
-import java.util.stream.Collectors;
 import java.util.Optional;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** 
+/**
  * Servlet with a GET handler that loads information about the user and a list of
  * comments from Datastore, and a POST handler that stores a new comment.
  */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
-
   // Logs to System.err by default.
-  private static final Logger LOGGER = Logger.getLogger(DataServlet.class.getName());
+  private static final Logger logger = Logger.getLogger(DataServlet.class.getName());
   private static final int DEFAULT_MAX_COMMENTS = 10;
 
   /**
@@ -74,6 +73,41 @@ public class DataServlet extends HttpServlet {
   }
 
   /**
+   * Stores a new comment posted by a logged-in user in Datastore.
+   */
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    UserService userService = UserServiceFactory.getUserService();
+    if (!userService.isUserLoggedIn()) {
+      response.sendRedirect("/index.html");
+      return;
+    }
+
+    String userId = userService.getCurrentUser().getUserId();
+    Optional<String> author = getUserName(userId);
+
+    if (!author.isPresent()) {
+      String email = userService.getCurrentUser().getEmail();
+      logger.severe("User <" + email + "> does not have an associated name.");
+      response.sendRedirect("/index.html");
+      return;
+    }
+
+    String commentText = request.getParameter("comment");
+    long timestamp = System.currentTimeMillis();
+
+    // Create an entity with a kind of Comment.
+    Entity commentEntity = new Entity("Comment");
+    commentEntity.setProperty("author", author.get());
+    commentEntity.setProperty("commentText", commentText);
+    commentEntity.setProperty("timestamp", timestamp);
+
+    // Store the comment entity in Datastore.
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    datastore.put(commentEntity);
+  }
+
+  /**
    * Gets the user's name, email, and a link to logout if they are logged in
    * or a link to log in otherwise.
    */
@@ -87,7 +121,8 @@ public class DataServlet extends HttpServlet {
 
       // Get the name of the logged-in user.
       String name = getUserName(userId).orElseGet(() -> {
-        // If the user has logged in for the first time, set their name as their Google account nickname.
+        // If the user has logged in for the first time, set their name as their Google account
+        // nickname.
         String defaultName = userService.getCurrentUser().getNickname();
         NameServlet.upsertUserInfo(defaultName);
         return defaultName;
@@ -111,45 +146,47 @@ public class DataServlet extends HttpServlet {
    * Gets a list of all the comments in JSON format translated to the selected language.
    */
   private JsonElement queryComments(HttpServletRequest request) {
-    // Query up to maxComments comment entities from Datastore with the user's specified sorting option.
+    // Query up to maxComments comment entities from Datastore with the user's specified sorting
+    // option.
     int maxComments = getMaxCommentsToReturn(request);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Query query = createCommentQuery(request);
-    List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(maxComments));
+    List<Entity> entities =
+        datastore.prepare(query).asList(FetchOptions.Builder.withLimit(maxComments));
 
     // Check if there are comments to translate.
     if (entities.isEmpty()) {
       return new JsonArray();
     } else {
       // Construct a stream of comment texts from the queried entities.
-      Stream<String> commentTexts = 
+      Stream<String> commentTexts =
           entities.stream().map(entity -> (String) entity.getProperty("commentText"));
 
       // Translate the comments to the selected language, preserving order.
       String languageCode = request.getParameter("language-code");
       Stream<String> translatedCommentTexts = translateComments(commentTexts, languageCode);
 
-      List<Comment> comments = createComments(entities.stream(), translatedCommentTexts);     
+      List<Comment> comments = createComments(entities.stream(), translatedCommentTexts);
       return convertToJsonElement(comments);
     }
   }
 
-  /** 
-   * Returns the name of the user with id, or null if a name has not been set. 
+  /**
+   * Returns the name of the user with id, or null if a name has not been set.
    */
   private Optional<String> getUserName(String id) {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Query query =
-        new Query("UserInfo")
-            .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, id));
+    Query query = new Query("UserInfo")
+                      .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, id));
     PreparedQuery results = datastore.prepare(query);
-    
+
     Entity entity = results.asSingleEntity();
     return Optional.ofNullable(entity).map(nameEntity -> (String) nameEntity.getProperty("name"));
   }
 
-  /** 
-   * Returns the maximum number of comments selected by the user, or the default of 10 if the number was invalid.
+  /**
+   * Returns the maximum number of comments selected by the user, or the default of 10 if the number
+   * was invalid.
    */
   private int getMaxCommentsToReturn(HttpServletRequest request) {
     // Get the input from the form.
@@ -160,13 +197,13 @@ public class DataServlet extends HttpServlet {
     try {
       maxComments = Integer.parseInt(maxCommentsString);
     } catch (NumberFormatException e) {
-      LOGGER.warning("Could not convert to int: " + maxCommentsString);
+      logger.warning("Could not convert to int: " + maxCommentsString);
       return DEFAULT_MAX_COMMENTS;
     }
 
     // Check that the input is positive.
     if (maxComments < 1) {
-      LOGGER.warning("Choice for maximum number of comments is out of range: " + maxCommentsString);
+      logger.warning("Choice for maximum number of comments is out of range: " + maxCommentsString);
       return DEFAULT_MAX_COMMENTS;
     }
 
@@ -180,7 +217,7 @@ public class DataServlet extends HttpServlet {
   private Query createCommentQuery(HttpServletRequest request) {
     Query query = new Query("Comment");
     String sortOption = request.getParameter("sort-option");
-    
+
     if (sortOption.equals("newest")) {
       return query.addSort("timestamp", SortDirection.DESCENDING);
     } else if (sortOption.equals("oldest")) {
@@ -200,12 +237,12 @@ public class DataServlet extends HttpServlet {
     // Convert the stream of comment texts into a list since the translation API takes in lists.
     List<String> commentTexts = comments.collect(Collectors.toList());
 
-    // Translate the list of comment texts. 
+    // Translate the list of comment texts.
     // The translation API ensures the comments are in the same order after translating.
     Translate translate = TranslateOptions.getDefaultInstance().getService();
-    List<Translation> translations = translate.translate(commentTexts, 
-        Translate.TranslateOption.targetLanguage(languageCode), 
-        Translate.TranslateOption.format("text"));
+    List<Translation> translations =
+        translate.translate(commentTexts, Translate.TranslateOption.targetLanguage(languageCode),
+            Translate.TranslateOption.format("text"));
 
     // Map the translations to a stream of strings.
     return translations.stream().map(Translation::getTranslatedText);
@@ -215,13 +252,16 @@ public class DataServlet extends HttpServlet {
    * Construct a list of comments from the queried entities and translated comment texts.
    */
   private List<Comment> createComments(Stream<Entity> entities, Stream<String> translations) {
-    return Streams.zip(entities, translations, (entity, translation) -> {
-      long id = entity.getKey().getId();
-      String author = (String) entity.getProperty("author");
-      long timestamp = (long) entity.getProperty("timestamp");
+    return Streams
+        .zip(entities, translations,
+            (entity, translation) -> {
+              long id = entity.getKey().getId();
+              String author = (String) entity.getProperty("author");
+              long timestamp = (long) entity.getProperty("timestamp");
 
-      return new Comment(id, author, translation, timestamp);
-    }).collect(Collectors.toList());
+              return new Comment(id, author, translation, timestamp);
+            })
+        .collect(Collectors.toList());
   }
 
   /**
@@ -231,40 +271,5 @@ public class DataServlet extends HttpServlet {
     Gson gson = new Gson();
     JsonElement jsonElement = gson.toJsonTree(list);
     return jsonElement;
-  }
-
-  /**
-   * Stores a new comment posted by a logged-in user in Datastore.
-   */
-  @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    UserService userService = UserServiceFactory.getUserService();
-    if (!userService.isUserLoggedIn()) {
-      response.sendRedirect("/index.html");
-      return;
-    }
-    
-    String userId = userService.getCurrentUser().getUserId();
-    Optional<String> author = getUserName(userId);
-
-    if (!author.isPresent()) {
-      String email = userService.getCurrentUser().getEmail(); 
-      LOGGER.severe("User <" + email + "> does not have an associated name.");
-      response.sendRedirect("/index.html");
-      return;
-    }
-
-    String commentText = request.getParameter("comment");
-    long timestamp = System.currentTimeMillis();
-    
-    // Create an entity with a kind of Comment.
-    Entity commentEntity = new Entity("Comment");
-    commentEntity.setProperty("author", author.get());
-    commentEntity.setProperty("commentText", commentText);
-    commentEntity.setProperty("timestamp", timestamp);
-
-    // Store the comment entity in Datastore.
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(commentEntity);
   }
 }

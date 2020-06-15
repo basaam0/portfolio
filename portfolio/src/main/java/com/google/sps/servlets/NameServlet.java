@@ -27,13 +27,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** 
+/**
  * Servlet with a POST handler that updates the name associated with a logged-in user in comments.
  */
 @WebServlet("/name")
 public class NameServlet extends HttpServlet {
-
-  // Matches names composed of letters, digits, underscores, and spaces between three and twenty characters long.
+  // Matches names composed of letters, digits, underscores, and spaces between three and twenty
+  // characters long.
   private static final Pattern validName = Pattern.compile("^[\\w ]{3,20}$");
 
   @Override
@@ -49,7 +49,7 @@ public class NameServlet extends HttpServlet {
       upsertUserInfo(name);
     }
   }
-  
+
   /**
    * Checks if the name is composed of only letters, digits, underscores,
    * and spaces and is between three and twenty characters in length.
@@ -59,8 +59,8 @@ public class NameServlet extends HttpServlet {
   }
 
   /**
-   * Inserts a new user info entity with the given name in datastore or updates the name in an existing entity
-   * based on the logged-in user's ID.
+   * Inserts a new user info entity with the given name in datastore or updates the name in an
+   * existing entity based on the logged-in user's ID.
    */
   public static void upsertUserInfo(String name) {
     UserService userService = UserServiceFactory.getUserService();
