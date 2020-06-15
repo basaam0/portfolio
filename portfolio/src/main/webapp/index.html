@@ -9,7 +9,7 @@
 
 <script src="script.js"></script>
 
-<body onload="getComments()">
+<body onload="loadCommentsSection()">
 <button id="prev-button" type="button" onclick="prevBackground()">&lt;</button>
 <button id="next-button" type="button" onclick="nextBackground()">&gt;</button>
 
@@ -110,28 +110,59 @@
   </div>
 
   <h2>Comments</h2>
-  <form id="post-comment" action="#" onsubmit="postComment(event)">
-    
+  <div id="comments-form-container">
     <h3>Post a comment:</h3>
     <br>
-    <label id="author-label" for="author">Name:</label>
-    <input id="author-input" type="text" name="author" placeholder="Your Name">
-    <br><br>
-    <label class="comments-label" for="comment">Comment:</label>
-    <textarea id="comment-input" name="comment" placeholder="Comment" required></textarea>
-    <br><br>
+    <div id="login-container">
+      <div id="login-message-container"></div>
+      <br>
+      <a id="login-logout-link">Login</a>
+    </div>
+    <br>
+    <form id="update-name" action="#" onsubmit="updateUserName(event)">
 
-    <input id="submit-comment" type="submit">
-  </form>
-  <br>
+      <label class="comments-label" for="user-name">Display Name:</label>
+      <input id="user-name-input" type="text" name="user-name" placeholder="Your Name" 
+          pattern="[\w ]{3,20}" title="Composed of only letters, digits, underscores,
+          and spaces with between three and twenty characters" required>
+      <br><br>
+
+      <button id="submit-name" type="submit">Update Name</button>
+    </form>
+    <br>
+    <form id="post-comment" action="#" onsubmit="postComment(event)">
+      
+      <label id="comment-text-label" class="comments-label" for="comment">Comment:</label>
+      <textarea id="comment-input" name="comment" placeholder="Comment" required></textarea>
+      <br><br>
+
+      <button id="submit-comment" type="submit">Post Comment</button>
+    </form>
+    <br>
+  </div>
+  
   <label class="comments-label" for="max-comments">Maximum Number of Comments:</label>
-  <input type="number" id="max-comments" name="max-comments" min="1" value="5" onchange="getComments()">
+  <input id="max-comments" type="number" name="max-comments" min="1" value="5" onchange="loadCommentsSection()">
 
   <label class="comments-label" for="sort-option">Sort By:</label>
-  <select id="sort-option" name="sort-option" onchange="getComments()">
+  <select id="sort-option" class="comment-option" name="sort-option" onchange="loadCommentsSection()">
     <option value="newest">Newest First</option>
     <option value="oldest">Oldest First</option>
     <option value="name">Alphabetically by Author</option>
+  </select>
+
+  <label class="comments-label" for="language">Language:</label>
+  <select id="language" class="comment-option" name="language" onchange="loadCommentsSection()">
+    <option value="en">English</option>
+    <option value="zh">Chinese (中文)</option>
+    <option value="es">Spanish (español)</option>
+    <option value="hi">Hindi (हिन्दी)</option>
+    <option value="ar">Arabic (العربية)</option>
+    <option value="fr">French (français)</option>
+    <option value="ko">Korean (한국어)</option>
+    <option value="sw">Swahili (Kiswahili)</option>
+    <option value="de">German (Deutsche)</option>
+    <option value="ru">Russian (русский)</option>
   </select>
 
   <div id="comments-container"></div>

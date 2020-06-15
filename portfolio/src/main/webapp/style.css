@@ -4,9 +4,10 @@
   --button-bg-color: rgba(160,82,45,.7);
   --comment-bg-color: rgba(255,255,255,.6);
   --heading-bg-color: rgba(160,82,45,.1);
-  --highlight-bg-color: rgba(0,255,0,.3);
+  --highlight-bg-color: rgba(118, 180, 118, 0.3);
   --primary-theme-color: #523029;
   --section-bg-color: rgba(255,255,255,.3);
+  --select-bg-color: rgba(160,82,45,.1);
 }
 
 ::selection {
@@ -15,7 +16,7 @@
 
 html {
   background: url(images/forest.jpg) center/100% no-repeat fixed;
-  font-family: 'Source Sans Pro', sans-serif;;
+  font-family: 'Source Sans Pro', sans-serif;
   height: 100%;
 }
 
@@ -39,22 +40,29 @@ body {
 }
 
 button,
-#submit-comment {
+#login-logout-link {
   cursor: pointer;
   outline: none;
 }
 
+button:hover,
+#login-logout-link:hover,
+#max-comments:hover,
+.comment-option:hover {
+  box-shadow: 0 0 10px teal;
+}
+
 .portfolio-section button,
-#submit-comment {
+#comments-form-container button,
+#login-logout-link {
   background: var(--button-bg-color);
   border: solid 4px transparent;
   border-radius: 10px;
-  margin: 0 90px;
 }
 
-button:hover,
-#submit-comment:hover {
-  box-shadow: 0 0 10px teal;
+#submit-comment,
+#submit-name {
+  margin: 0 120px;
 }
 
 /* Main content */
@@ -72,6 +80,7 @@ button:hover,
 }
 
 #facts {
+  padding: 5px 5px 10px 5px;
   text-align: center; 
 }
 
@@ -134,13 +143,29 @@ ul {
 
 /* Comments Section */
 
-#post-comment {
+#login-container {
   background: rgba(255,255,255,.4);
-  padding: 5px;
+  padding: 5px 5px 10px 5px;
+  text-align: center;
 }
 
-#author-input,
-#comment-input {
+#login-logout-link {
+  color: inherit;
+  padding: .5px 7px 1px;
+  text-decoration: none;
+}
+
+#update-name,
+#post-comment {
+  background: rgba(255,255,255,.4);
+  display: none;
+  padding: 5px 5px 10px 5px;
+}
+
+#user-name-input,
+#comment-input,
+#max-comments,
+.comment-option {
   border: solid 1px var(--primary-theme-color);
 }
 
@@ -153,12 +178,24 @@ ul {
   margin: 0px 10px;
 }
 
-#author-label {
-  margin: 0 22px;
+#comment-text-label {
+  margin: 0 34px 0 10px;
+}
+
+#max-comments,
+.comment-option {
+  background: white;
+  border-radius: 8px;
+  height: 25px;
+  outline: none;
 }
 
 #max-comments {
   width: 40px;
+}
+
+.comment-option option {
+  background: var(--select-bg-color);
 }
 
 #comments-container {
@@ -171,6 +208,12 @@ ul {
   border-radius: 30px;
   margin: 20px 0;
   padding: 4px 10px;
+  transition: all .3s ease-in-out;
+}
+
+#comments-container div:hover {
+  background: whitesmoke;
+  transform: scale(1.1);
 }
 
 .comment-date {

@@ -19,8 +19,6 @@ package com.google.sps.data;
  */
 public final class Comment {
 
-  public static final String DEFAULT_AUTHOR = "Anonymous";
-
   private final long id;
   private final String author;
   private final String commentText;
