@@ -14,6 +14,7 @@
 
 package com.google.sps;
 
+import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -37,7 +38,6 @@ public final class FindMeetingQuery {
 
     // Get the list of time ranges where the attendees have scheduled events.
     List<TimeRange> conflicts = findTimeConflicts(events, attendees);
-
     return getPossibleMeetingTimes(conflicts, request);
   }
 
@@ -45,12 +45,13 @@ public final class FindMeetingQuery {
    * Extracts a list of time ranges where any of the given people have events
    * scheduled. Returns the list sorted by start time in ascending order.
    */
-  private List<TimeRange> findTimeConflicts(Collection<Event> events, Collection<String> people) {
+  private ImmutableList<TimeRange> findTimeConflicts(
+      Collection<Event> events, Collection<String> people) {
     return events.stream()
         .filter(event -> hasCommonAttendees(event, people))
         .map(Event::getWhen)
         .sorted(TimeRange.ORDER_BY_START)
-        .collect(Collectors.toList());
+        .collect(ImmutableList.toImmutableList());
   }
 
   /**
@@ -66,7 +67,7 @@ public final class FindMeetingQuery {
    * the requested meeting given a list of conflicting time ranges
    * that is sorted by start time.
    */
-  private List<TimeRange> getPossibleMeetingTimes(
+  private ImmutableList<TimeRange> getPossibleMeetingTimes(
       List<TimeRange> conflicts, MeetingRequest request) {
     long meetingDuration = request.getDuration();
     List<TimeRange> possibleTimes = new ArrayList<>();
@@ -104,6 +105,6 @@ public final class FindMeetingQuery {
       possibleTimes.add(freeTime);
     }
 
-    return possibleTimes;
+    return ImmutableList.copyOf(possibleTimes);
   }
 }
