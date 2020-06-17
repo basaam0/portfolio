@@ -70,7 +70,7 @@ public final class FindMeetingQuery {
   private ImmutableList<TimeRange> getPossibleMeetingTimes(
       List<TimeRange> conflicts, MeetingRequest request) {
     long meetingDuration = request.getDuration();
-    List<TimeRange> possibleTimes = new ArrayList<>();
+    ImmutableList.Builder<TimeRange> possibleTimes = ImmutableList.<TimeRange>builder();
     int freeStart = TimeRange.START_OF_DAY;
 
     // Add time ranges that are in the gaps between conflicting events.
@@ -105,6 +105,6 @@ public final class FindMeetingQuery {
       possibleTimes.add(freeTime);
     }
 
-    return ImmutableList.copyOf(possibleTimes);
+    return possibleTimes.build();
   }
 }
