@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Implements the "find a meeting" feature which returns the possible times when
@@ -29,16 +30,36 @@ import java.util.stream.Collectors;
  */
 public final class FindMeetingQuery {
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
-    Collection<String> attendees = request.getAttendees();
-
     // There are no options for a meeting longer than a day.
     if (request.getDuration() > TimeRange.WHOLE_DAY.duration()) {
       return Arrays.asList();
     }
 
-    // Get the list of time ranges where the attendees have scheduled events.
+    Collection<String> attendees = request.getAttendees();
+    Collection<String> optionalAttendees = request.getOptionalAttendees();
+
+    // Get the list of time ranges where the mandatory attendees have scheduled events.
     List<TimeRange> conflicts = findTimeConflicts(events, attendees);
-    return getPossibleMeetingTimes(conflicts, request);
+    Collection<TimeRange> meetings = getPossibleMeetingTimes(conflicts, request);
+
+    if (!optionalAttendees.isEmpty()) {
+      // Get the list of time ranges where all attendees have scheduled events.
+      List<TimeRange> optionalAttendeeConflicts = findTimeConflicts(events, optionalAttendees);
+      conflicts = Stream.concat(conflicts.stream(), optionalAttendeeConflicts.stream())
+                      .sorted(TimeRange.ORDER_BY_START)
+                      .collect(Collectors.toList());
+
+      Collection<TimeRange> meetingsWithOptionalAttendees =
+          getPossibleMeetingTimes(conflicts, request);
+
+      // If time slots exist so that both mandatory and optional attendees can attend, return those
+      // time slots.
+      if (!meetingsWithOptionalAttendees.isEmpty() || attendees.isEmpty()) {
+        return meetingsWithOptionalAttendees;
+      }
+    }
+
+    return meetings;
   }
 
   /**
@@ -83,10 +104,16 @@ public final class FindMeetingQuery {
       while (conflictIndex < conflicts.size() - 1
           && conflict.overlaps(conflicts.get(conflictIndex + 1))) {
         conflictIndex++;
-        conflict = conflicts.get(conflictIndex);
+        TimeRange nextConflict = conflicts.get(conflictIndex);
 
-        // The next overlapping time range may or may not have a later end time.
-        conflictEnd = Math.max(conflictEnd, conflict.end());
+        // The remaining time ranges that overlap with the current should be compared to the one
+        // with the latest end time. Otherwise, in the case that a time range contains two
+        // non-overlapping time ranges, the loop would exit before all three time ranges are
+        // looked at because the third range does not overlap with the second.
+        if (nextConflict.end() > conflictEnd) {
+          conflict = nextConflict;
+          conflictEnd = nextConflict.end();
+        }
       }
 
       // Add the free time in between conflicts if it is long enough for the meeting.
