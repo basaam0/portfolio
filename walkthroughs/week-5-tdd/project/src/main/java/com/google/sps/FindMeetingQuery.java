@@ -104,15 +104,15 @@ public final class FindMeetingQuery {
       while (conflictIndex < conflicts.size() - 1
           && conflict.overlaps(conflicts.get(conflictIndex + 1))) {
         conflictIndex++;
-        TimeRange nextConflict = conflicts.get(conflictIndex);
+        TimeRange nextOverlappingConflict = conflicts.get(conflictIndex);
 
         // The remaining time ranges that overlap with the current should be compared to the one
         // with the latest end time. Otherwise, in the case that a time range contains two
         // non-overlapping time ranges, the loop would exit before all three time ranges are
         // looked at because the third range does not overlap with the second.
-        if (nextConflict.end() > conflictEnd) {
-          conflict = nextConflict;
-          conflictEnd = nextConflict.end();
+        if (nextOverlappingConflict.end() > conflictEnd) {
+          conflict = nextOverlappingConflict;
+          conflictEnd = nextOverlappingConflict.end();
         }
       }
 
