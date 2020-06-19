@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Implements the "find a meeting" feature which returns the possible times when
@@ -29,16 +30,36 @@ import java.util.stream.Collectors;
  */
 public final class FindMeetingQuery {
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
-    Collection<String> attendees = request.getAttendees();
-
     // There are no options for a meeting longer than a day.
     if (request.getDuration() > TimeRange.WHOLE_DAY.duration()) {
       return Arrays.asList();
     }
 
-    // Get the list of time ranges where the attendees have scheduled events.
-    List<TimeRange> conflicts = findTimeConflicts(events, attendees);
-    return getPossibleMeetingTimes(conflicts, request);
+    Collection<String> mandatoryAttendees = request.getAttendees();
+    Collection<String> optionalAttendees = request.getOptionalAttendees();
+
+    // Get the list of time ranges where the mandatory attendees have scheduled events.
+    List<TimeRange> conflicts = findTimeConflicts(events, mandatoryAttendees);
+    Collection<TimeRange> meetings = getPossibleMeetingTimes(conflicts, request);
+
+    if (!optionalAttendees.isEmpty()) {
+      // Get the list of time ranges where all attendees have scheduled events.
+      List<TimeRange> optionalAttendeeConflicts = findTimeConflicts(events, optionalAttendees);
+      conflicts = Stream.concat(conflicts.stream(), optionalAttendeeConflicts.stream())
+                      .sorted(TimeRange.ORDER_BY_START)
+                      .collect(Collectors.toList());
+
+      Collection<TimeRange> meetingsWithOptionalAttendees =
+          getPossibleMeetingTimes(conflicts, request);
+
+      // If time slots exist so that both mandatory and optional attendees can attend, return those
+      // time slots.
+      if (!meetingsWithOptionalAttendees.isEmpty() || mandatoryAttendees.isEmpty()) {
+        return meetingsWithOptionalAttendees;
+      }
+    }
+
+    return meetings;
   }
 
   /**
@@ -74,29 +95,22 @@ public final class FindMeetingQuery {
     int freeStart = TimeRange.START_OF_DAY;
 
     // Add time ranges that are in the gaps between conflicting events.
-    for (int conflictIndex = 0; conflictIndex < conflicts.size(); conflictIndex++) {
-      TimeRange conflict = conflicts.get(conflictIndex);
-      int conflictStart = conflict.start();
-      int conflictEnd = conflict.end();
+    int conflictIndex = 0;
+    while (conflictIndex < conflicts.size()) {
+      OverlappingTimeRange conflict =
+          combineOverlappingTimes(conflicts.subList(conflictIndex, conflicts.size()));
 
-      // Get the latest end time out of all the time conflicts that overlap with the current one.
-      while (conflictIndex < conflicts.size() - 1
-          && conflict.overlaps(conflicts.get(conflictIndex + 1))) {
-        conflictIndex++;
-        conflict = conflicts.get(conflictIndex);
-
-        // The next overlapping time range may or may not have a later end time.
-        conflictEnd = Math.max(conflictEnd, conflict.end());
-      }
+      // Move the index to after the chunk of overlapping times.
+      conflictIndex += conflict.getNumberOfOverlappingTimes();
 
       // Add the free time in between conflicts if it is long enough for the meeting.
-      TimeRange freeTime = TimeRange.fromStartEnd(freeStart, conflictStart, false);
+      TimeRange freeTime = TimeRange.fromStartEnd(freeStart, conflict.start(), false);
       if (freeTime.duration() >= meetingDuration) {
         possibleTimes.add(freeTime);
       }
 
       // The start of the next free time range is the end of the latest conflict.
-      freeStart = conflictEnd;
+      freeStart = conflict.end();
     }
 
     // Add the free time between the end of the last conflict and end of day.
@@ -106,5 +120,37 @@ public final class FindMeetingQuery {
     }
 
     return possibleTimes.build();
+  }
+
+  // Creates an overlapping time range containing a list of the time ranges that overlap
+  // starting at the first one. If no time ranges overlap with the first, the list
+  // will be of size one. The given list of times must be sorted by start time.
+  private OverlappingTimeRange combineOverlappingTimes(List<TimeRange> times) {
+    int currentIndex = 0;
+    TimeRange overlappingTime = times.get(currentIndex);
+    int start = overlappingTime.start();
+    int end = overlappingTime.end();
+
+    List<TimeRange> overlappingTimes = new ArrayList<>();
+    overlappingTimes.add(overlappingTime);
+
+    // Add all the time ranges that overlap with the current one and get the latest end time.
+    while (
+        currentIndex < times.size() - 1 && overlappingTime.overlaps(times.get(currentIndex + 1))) {
+      currentIndex++;
+      TimeRange nextOverlappingTime = times.get(currentIndex);
+      overlappingTimes.add(nextOverlappingTime);
+
+      // The remaining time ranges that overlap with the current should be compared to the one
+      // with the latest end time. Otherwise, in the case that a time range contains two
+      // non-overlapping time ranges, the loop would exit before all three time ranges are
+      // looked at because the third range does not overlap with the second.
+      if (nextOverlappingTime.end() > end) {
+        overlappingTime = nextOverlappingTime;
+        end = nextOverlappingTime.end();
+      }
+    }
+
+    return new OverlappingTimeRange(overlappingTimes, start, end);
   }
 }
