@@ -320,10 +320,10 @@ public final class FindMeetingQueryTest {
     Collection<Event> events = Arrays.asList(
         new Event("Event 1", TimeRange.fromStartDuration(TIME_0800AM, DURATION_30_MINUTES),
             Arrays.asList(PERSON_A)),
-        new Event("Event 2", TimeRange.fromStartDuration(TIME_0900AM, DURATION_30_MINUTES),
-            Arrays.asList(PERSON_B)),
-        new Event("Event 3", TimeRange.fromStartDuration(TIME_0830AM, DURATION_30_MINUTES),
-            Arrays.asList(PERSON_C)));
+        new Event("Event 2", TimeRange.fromStartDuration(TIME_0830AM, DURATION_30_MINUTES),
+            Arrays.asList(PERSON_C)),
+        new Event("Event 3", TimeRange.fromStartDuration(TIME_0900AM, DURATION_30_MINUTES),
+            Arrays.asList(PERSON_B)));
 
     Collection<String> attendees = Arrays.asList(PERSON_A, PERSON_B);
     Collection<String> optionalAttendees = Arrays.asList(PERSON_C);
@@ -350,10 +350,10 @@ public final class FindMeetingQueryTest {
     Collection<Event> events = Arrays.asList(
         new Event("Event 1", TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0830AM, false),
             Arrays.asList(PERSON_A)),
-        new Event("Event 2", TimeRange.fromStartEnd(TIME_0900AM, TimeRange.END_OF_DAY, true),
-            Arrays.asList(PERSON_A)),
-        new Event("Event 3", TimeRange.fromStartEnd(TIME_0830AM, TIME_0845AM, true),
-            Arrays.asList(PERSON_B)));
+        new Event("Event 2", TimeRange.fromStartEnd(TIME_0830AM, TIME_0845AM, true),
+            Arrays.asList(PERSON_B)),
+        new Event("Event 3", TimeRange.fromStartEnd(TIME_0900AM, TimeRange.END_OF_DAY, true),
+            Arrays.asList(PERSON_A)));
 
     Collection<String> attendees = Arrays.asList(PERSON_A);
     Collection<String> optionalAttendees = Arrays.asList(PERSON_B);
@@ -377,13 +377,13 @@ public final class FindMeetingQueryTest {
     // Options : |-1-|    |--2--|       |---3---|     |--4--|
 
     Collection<Event> events = Arrays.asList(
-        new Event("Event 4", TimeRange.fromStartDuration(TIME_0700AM, DURATION_30_MINUTES),
+        new Event("Event 1", TimeRange.fromStartDuration(TIME_0700AM, DURATION_30_MINUTES),
             Arrays.asList(PERSON_B)),
-        new Event("Event 1", TimeRange.fromStartDuration(TIME_0830AM, DURATION_30_MINUTES),
+        new Event("Event 2", TimeRange.fromStartDuration(TIME_0830AM, DURATION_30_MINUTES),
             Arrays.asList(PERSON_A)),
-        new Event("Event 5", TimeRange.fromStartDuration(TIME_0900AM, DURATION_30_MINUTES),
+        new Event("Event 3", TimeRange.fromStartDuration(TIME_0900AM, DURATION_30_MINUTES),
             Arrays.asList(PERSON_B)),
-        new Event("Event 3", TimeRange.fromStartDuration(TIME_1100AM, DURATION_60_MINUTES),
+        new Event("Event 4", TimeRange.fromStartDuration(TIME_1100AM, DURATION_60_MINUTES),
             Arrays.asList(PERSON_A)));
 
     MeetingRequest request =
