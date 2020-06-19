@@ -14,7 +14,7 @@
 
 package com.google.sps;
 
-import java.util.ArrayList;
+import com.google.common.collect.ImmutableList;
 import java.util.List;
 
 /**
@@ -22,11 +22,11 @@ import java.util.List;
  * ranges.
  */
 public final class OverlappingTimeRange {
-  private List<TimeRange> overlappingTimes = new ArrayList<>();
+  private ImmutableList<TimeRange> overlappingTimes;
   private TimeRange block;
 
   public OverlappingTimeRange(List<TimeRange> overlappingTimes, int start, int end) {
-    this.overlappingTimes.addAll(overlappingTimes);
+    this.overlappingTimes = ImmutableList.copyOf(overlappingTimes);
     block = TimeRange.fromStartEnd(start, end, false);
   }
 
