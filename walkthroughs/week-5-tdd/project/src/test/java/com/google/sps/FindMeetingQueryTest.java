@@ -377,14 +377,14 @@ public final class FindMeetingQueryTest {
     // Options : |-1-|    |--2--|       |---3---|     |--4--|
 
     Collection<Event> events = Arrays.asList(
-        new Event("Event 1", TimeRange.fromStartDuration(TIME_0830AM, DURATION_30_MINUTES),
-            Arrays.asList(PERSON_A)),
-        new Event("Event 3", TimeRange.fromStartDuration(TIME_1100AM, DURATION_60_MINUTES),
-            Arrays.asList(PERSON_A)),
         new Event("Event 4", TimeRange.fromStartDuration(TIME_0700AM, DURATION_30_MINUTES),
             Arrays.asList(PERSON_B)),
+        new Event("Event 1", TimeRange.fromStartDuration(TIME_0830AM, DURATION_30_MINUTES),
+            Arrays.asList(PERSON_A)),
         new Event("Event 5", TimeRange.fromStartDuration(TIME_0900AM, DURATION_30_MINUTES),
-            Arrays.asList(PERSON_B)));
+            Arrays.asList(PERSON_B)),
+        new Event("Event 3", TimeRange.fromStartDuration(TIME_1100AM, DURATION_60_MINUTES),
+            Arrays.asList(PERSON_A)));
 
     MeetingRequest request =
         new MeetingRequest(NO_ATTENDEES, Arrays.asList(PERSON_A, PERSON_B), DURATION_30_MINUTES);
