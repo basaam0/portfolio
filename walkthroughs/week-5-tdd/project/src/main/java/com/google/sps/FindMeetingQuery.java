@@ -97,7 +97,8 @@ public final class FindMeetingQuery {
     // Add time ranges that are in the gaps between conflicting events.
     int conflictIndex = 0;
     while (conflictIndex < conflicts.size()) {
-      OverlappingTimeRange conflict = combineOverlappingTimes(conflicts, conflictIndex);
+      OverlappingTimeRange conflict =
+          combineOverlappingTimes(conflicts.subList(conflictIndex, conflicts.size()));
 
       // Move the index to after the chunk of overlapping times.
       conflictIndex += conflict.getNumberOfOverlappingTimes();
@@ -122,9 +123,10 @@ public final class FindMeetingQuery {
   }
 
   // Creates an overlapping time range containing a list of the time ranges that overlap
-  // starting at the given index. If no time ranges overlap with the first one, the list
+  // starting at the first one. If no time ranges overlap with the first, the list
   // will be of size one. The given list of times must be sorted by start time.
-  private OverlappingTimeRange combineOverlappingTimes(List<TimeRange> times, int currentIndex) {
+  private OverlappingTimeRange combineOverlappingTimes(List<TimeRange> times) {
+    int currentIndex = 0;
     TimeRange overlappingTime = times.get(currentIndex);
     int start = overlappingTime.start();
     int end = overlappingTime.end();
